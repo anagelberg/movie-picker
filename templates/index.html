@@ -13,10 +13,13 @@
 
 {% block content %}
 <div class="container">
-  <h1 class="heading">My Watchlist</h1>
+  <h1 class="heading">My Watchlists</h1>
   <p class="description">These are the movies I'd like to watch.</p>
 
-    {% for movie in movies %}
+    {% for movie_list in watchlists %}
+    <h2 class="heading">{{movie_list.name}}</h2>
+    <p class="description">{{movie_list.description}}</p>
+    {% for movie in movie_list.movies %}
   <div class="card" >
     <div class="front" style="background-image: url({{ movie.img_url }});">
         <p class="large"> {{ movie.ranking }} </p>
@@ -42,9 +45,18 @@
   </div>
 
     {% endfor %}
-</div>
+
 <div class="container text-center add">
-<a href="{{ url_for('add') }}" class="button">Add Movie</a>
+<a href="{{ url_for('add', watchlist_id=movie_list.id) }}" class="button">Add Movie</a>
 </div>
+
+{% endfor %}
+
+</div>
+
+<div class="container text-center add">
+<a href="{{ url_for('add_list') }}" class="button">Create new watchlist</a>
+</div>
+
 
 {% endblock %}

@@ -1,21 +1,16 @@
 from flask import Flask, render_template, redirect, url_for, request
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 import requests
 import os
+from app import db, Movie, MovieList, app
+from manager import DbManager
 
 # To do- Wednesday
-# TODO: separate scripts into convenient sections: url.py, main.py, db.py, forms.py, manager.py
-# TODO: Add list object functionality and show as separate on home screen
 # TODO: Edit page for movie/manual entry button
-# TODO: Make an object to handle some search functionality
+# TODO: Make an object to handle some search functionality Manager /clean up code
 # TODO: Can select page go under the search box?
 
 # To Do - Thursday
-#TODO: Add movie picker functionality
+# TODO: Add movie picker functionality
 
 # To do- Friday
 # TODO: Make comments on code
@@ -23,61 +18,37 @@ import os
 # TODO: Download on Jesse's computer
 # TODO: Add to Portfolio :)
 
+# Other
+# TODO: Same movie different list?
+# TODO: trycatch errors: double click
 
-##########################
-
-
-class AddMovieForm(FlaskForm):
-    movie = StringField(label='Movie Title', validators=[DataRequired()])
-    submit = SubmitField(label="Add Movie")
-
-class RateMovieForm(FlaskForm):
-    my_rating = StringField(label='Your rating out of 10 e.g. 7.5', validators=[DataRequired()])
-    submit = SubmitField(label="Done")
-
-
+##########################################
 TMDB_API_KEY = os.environ['TMDB_API_KEY']
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-
-# Create in app
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movies.db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-app.app_context().push()
-Bootstrap(app)
-
-
-# Create Movie Table
-class Movie(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.String(250), nullable=False)
-    my_rating = db.Column(db.Float, nullable=True)
-    img_url = db.Column(db.String(500), nullable=False)
-    pop_rating = db.Column(db.Float, nullable=True)
-    run_time = db.Column(db.Integer, nullable=True)
-    genre = db.Column(db.String(200), nullable=True)
-    watched = db.Column(db.String(10), nullable=False)
-    imdb_id = db.Column(db.String(30), nullable=False)
-    tmdb_id = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return f'<Book {self.title}>'
-
-    def update_stream_availability_data(self):
-        pass
-
+##########################################
 
 db.create_all()
+from forms import AddMovieForm, RateMovieForm, NewWatchlistForm
+
+db_manager = DbManager()
 
 @app.route("/")
 def home():
-    all_movies = Movie.query.order_by(Movie.pop_rating).all()
-    return render_template("index.html", movies=all_movies)
+    all_lists = MovieList.query.all()
+    return render_template("index.html", watchlists=all_lists)
+
+@app.route("/new-movie-list", methods=["GET", "POST"])
+def add_list():
+    add_form = NewWatchlistForm()
+    if add_form.validate_on_submit():
+        new_list = MovieList(
+            name=add_form.list_name.data,
+            description=add_form.description.data
+        )
+        db.session.add(new_list)
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template("new_movie_list.html", form=add_form)
+
 
 # Edit rating
 @app.route("/edit/<movie_id>", methods=["GET", "POST"])
@@ -92,9 +63,10 @@ def edit(movie_id):
 
 
 # Form to add movie, searches based on title and sends to select page
-@app.route("/add", methods=["GET", "POST"])
-def add():
+@app.route("/add/<watchlist_id>", methods=["GET", "POST"])
+def add(watchlist_id):
     add_form = AddMovieForm()
+    db_manager.current_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
     if add_form.validate_on_submit():
         movie_title = add_form.movie.data
         parameters = {
@@ -122,17 +94,14 @@ def add_movie(movie_id):
     response.raise_for_status()
     movie_data = response.json()
 
-
-    # Add the movie to the database
     if movie_data["poster_path"] is not None:
         poster_url = movie_data["poster_path"]
     else:
         poster_url = movie_data['belongs_to_collection']['poster_path']
 
     genre_list = [genre["name"] for genre in movie_data["genres"]]
-    print(', '.join(genre_list))
 
-
+    # Add the movie to the database
     new_movie = Movie(
         title=movie_data["title"],
         year=movie_data["release_date"].split("-")[0],
@@ -144,13 +113,14 @@ def add_movie(movie_id):
         imdb_id=movie_data["imdb_id"],
         watched="False",
         genre=', '.join(genre_list),
-        tmdb_id=movie_data['id']
+        tmdb_id=movie_data['id'],
+        movie_list=db_manager.current_watchlist
      )
 
     db.session.add(new_movie)
     db.session.commit()
 
-    # TODO: Change this to go to select, first need to make appropriate search manager object
+    # TODO: Change this to go to select, first need to make appropriate search manager object?
     return redirect(url_for('home'))
 
 

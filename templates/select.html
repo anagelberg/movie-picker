@@ -12,14 +12,13 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="heading">Select Movie</h1>
+    <h1 class="heading">Select Movie to add to watchlist</h1>
 
   {% for movie in movies %}
   <p>
     {% if movie["id"] not in movie_id_list: %}
-    <a href="{{ url_for('add_movie',  movie_search_list=movies,
-                                      movie_id=movie['id'],
-                                      movie_db_id_list=movie_id_list)}}"
+    <a href="{{ url_for('add_movie',  movie_id=movie['id'],
+                                      list_name=list_name)}}"
                     class="btn btn-primary">+</a>
     {% else: %}
     <a href="" class="btn disabled btn-secondary" >✓</a>
