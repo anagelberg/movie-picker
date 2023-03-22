@@ -28,7 +28,7 @@
 }
  p.overview {
 	 font-size: 12px;
-	 height: 200px;
+	 height: 150px;
 	 width: 100%;
 	 overflow: hidden;
 	 text-overflow: ellipsis;
@@ -208,6 +208,11 @@
 }
  .title {
 	 font-weight: bold;
+	 font-size: 1.1rem;
+}
+
+.run_time {
+    font-size:.7rem;
 }
  .release_date {
 	 font-weight: normal;

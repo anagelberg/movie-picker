@@ -16,7 +16,15 @@
 
   {% for movie in movies %}
   <p>
-    <a href="{{ url_for('add_movie', movie_id=movie['id'])}}"> {{ movie["title"] }} - {{ movie["release_date"] }} </a>
+    {% if movie["id"] not in movie_id_list: %}
+    <a href="{{ url_for('add_movie',  movie_search_list=movies,
+                                      movie_id=movie['id'],
+                                      movie_db_id_list=movie_id_list)}}"
+                    class="btn btn-primary">+</a>
+    {% else: %}
+    <a href="" class="btn disabled btn-secondary" >✓</a>
+    {% endif %}
+        {{ movie["title"] }} - {{ movie["release_date"] }}
   </p>
   {% endfor %}
 

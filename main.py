@@ -5,6 +5,26 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
+import os
+
+# To do- Wednesday
+# TODO: separate scripts into convenient sections: url.py, main.py, db.py, forms.py, manager.py
+# TODO: Add list object functionality and show as separate on home screen
+# TODO: Edit page for movie/manual entry button
+# TODO: Make an object to handle some search functionality
+# TODO: Can select page go under the search box?
+
+# To Do - Thursday
+#TODO: Add movie picker functionality
+
+# To do- Friday
+# TODO: Make comments on code
+# TODO: Make instructional README
+# TODO: Download on Jesse's computer
+# TODO: Add to Portfolio :)
+
+
+##########################
 
 
 class AddMovieForm(FlaskForm):
@@ -16,18 +36,17 @@ class RateMovieForm(FlaskForm):
     submit = SubmitField(label="Done")
 
 
-TMDB_API_KEY = "bba491762ee6540f2a2e380a224c0979"
-
+TMDB_API_KEY = os.environ['TMDB_API_KEY']
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
-# Create database
+# Create in app
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movies.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-app.app_context().push()
 
+app.app_context().push()
 Bootstrap(app)
 
 
@@ -39,14 +58,12 @@ class Movie(db.Model):
     description = db.Column(db.String(250), nullable=False)
     my_rating = db.Column(db.Float, nullable=True)
     img_url = db.Column(db.String(500), nullable=False)
-    critic_rating = db.Column(db.Float, nullable=True)
-    run_time = db.Column(db.Float, nullable=True)
+    pop_rating = db.Column(db.Float, nullable=True)
+    run_time = db.Column(db.Integer, nullable=True)
     genre = db.Column(db.String(200), nullable=True)
-    on_netflix = db.Column(db.String(10), nullable=True)
-    on_amazon = db.Column(db.String(10), nullable=True)
-    on_disney = db.Column(db.String(10), nullable=True)
-    on_hulu = db.Column(db.String(10), nullable=True)
-    youtube_rental_price = db.Column(db.Float, nullable=True)
+    watched = db.Column(db.String(10), nullable=False)
+    imdb_id = db.Column(db.String(30), nullable=False)
+    tmdb_id = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
         return f'<Book {self.title}>'
@@ -59,7 +76,7 @@ db.create_all()
 
 @app.route("/")
 def home():
-    all_movies = Movie.query.order_by(Movie.critic_rating).all()
+    all_movies = Movie.query.order_by(Movie.pop_rating).all()
     return render_template("index.html", movies=all_movies)
 
 # Edit rating
@@ -89,7 +106,10 @@ def add():
         response.raise_for_status()
         data = response.json()
         movie_data = data['results']
-        return render_template("select.html", movies=movie_data)
+
+        all_movies = Movie.query.all()
+        id_list = [int(movie.tmdb_id) for movie in all_movies]
+        return render_template("select.html", movies=movie_data, movie_id_list=id_list)
     return render_template("add.html", form=add_form)
 
 # Adds the movie details to the database sent from select
@@ -109,20 +129,29 @@ def add_movie(movie_id):
     else:
         poster_url = movie_data['belongs_to_collection']['poster_path']
 
+    genre_list = [genre["name"] for genre in movie_data["genres"]]
+    print(', '.join(genre_list))
+
 
     new_movie = Movie(
         title=movie_data["title"],
-        year=movie_data["release_date"],
+        year=movie_data["release_date"].split("-")[0],
         description=movie_data["overview"],
         my_rating=None,
         img_url=f"https://image.tmdb.org/t/p/original{poster_url}",
-        run_time=None
+        run_time=movie_data["runtime"],
+        pop_rating=movie_data["vote_average"],
+        imdb_id=movie_data["imdb_id"],
+        watched="False",
+        genre=', '.join(genre_list),
+        tmdb_id=movie_data['id']
      )
 
     db.session.add(new_movie)
     db.session.commit()
 
-    return redirect(url_for("edit", movie_id=new_movie.id))
+    # TODO: Change this to go to select, first need to make appropriate search manager object
+    return redirect(url_for('home'))
 
 
 

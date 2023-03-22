@@ -23,12 +23,13 @@
     </div>
     <div class="back">
       <div>
-    <div class="title">{{ movie.title }} <span class="release_date">({{ movie.year}})</span></div>
+    <div class="title">{{ movie.title }} <br> <span class="release_date">({{ movie.year}})</span></div>
         <div class="rating">
-            <label>{{ movie.rating }}</label>
+            <label>{{ movie.pop_rating }}</label>
           <i class="fas fa-star star"></i>
         </div>
-          <p class="review">"{{ movie.review }}"</p>
+          <p class="genre">{{ movie.genre }}</p>
+          <p class="run_time">{{ movie.run_time }} minutes</p><br>
         <p class="overview">
             {{ movie.description }}
         </p>
