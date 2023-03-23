@@ -6,12 +6,14 @@ class DbManager():
     def __init__(self):
         self.current_watchlist = None
         self.current_id_list = None
+        self.movie_id_to_add = None
 
 
 class SearchManager():
     def __init__(self):
         self.title_results = None
         self.movie_data = None
+        self.movie_id_to_add = None
         self.TMDB_API_KEY = os.environ['TMDB_API_KEY']
 
     def search_tmdb_titles(self, title):
@@ -43,3 +45,7 @@ class SearchManager():
 
         genre_list = [genre["name"] for genre in self.movie_data["genres"]]
         self.movie_data["genre_string"] = ', '.join(genre_list)
+
+    def added(self):
+        self.movie_data = None
+        self.movie_id_to_add = None

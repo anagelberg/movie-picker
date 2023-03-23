@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from wtforms import StringField, SubmitField, SelectField, RadioField
 from wtforms.validators import DataRequired
 
 
-class AddMovieForm(FlaskForm):
+class SearchMovieForm(FlaskForm):
     movie = StringField(label='Movie Title', validators=[DataRequired()])
     submit = SubmitField(label="Add Movie")
 
@@ -17,3 +17,13 @@ class NewWatchlistForm(FlaskForm):
     list_name = StringField(label="Name for your watchlist", validators=[DataRequired()])
     description = StringField(label="Description (optional)")
     submit = SubmitField(label="Create list")
+
+
+class VibeForm(FlaskForm):
+    emotional_vibe = RadioField(label="Select emotional vibe:",
+                                choices=["Heavy-hearted", "Neutral", "Lighthearted"],
+                                default="Neutral")
+    mental_vibe = RadioField(label="Select mental vibe:",
+                             choices=["Thought-provoking", "Neutral", "Brainless"],
+                             default="Neutral")
+    submit = SubmitField(label="Add movie")

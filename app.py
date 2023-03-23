@@ -3,8 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
 from sqlalchemy.orm import relationship
+from flask_modals import Modal
 
 app = Flask(__name__)
+modal = Modal(app)
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # Create in app
@@ -31,8 +33,11 @@ class Movie(db.Model):
     watched = db.Column(db.String(10), nullable=False)
     imdb_id = db.Column(db.String(30), nullable=True)
     tmdb_id = db.Column(db.String(50), nullable=False)
+    emotional_vibe = db.Column(db.String(20), nullable=False)
+    mental_vibe = db.Column(db.String(20), nullable=False)
     movie_list = relationship("MovieList", back_populates="movies")
     movie_list_id = db.Column(db.Integer, db.ForeignKey('movie_lists.id'))
+
 
 # Create Movie List Table
 class MovieList(db.Model):

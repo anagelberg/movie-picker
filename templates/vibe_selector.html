@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Example of Auto Loading Bootstrap Modal on Page Load</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+	$(document).ready(function(){
+		$("#myModal").modal('show');
+	});
+
+    </script>
+</head>
+<body>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select vibe</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Choose the emotional and mental vibe of this movie.</p>
+                <form action="{{ url_for('add_movie') }}" method="post">
+
+                 <!-- emotional vibe radio buttons -->
+                    <fieldset class="form-group">
+                        <div>
+                            <legend>Emotional vibe</legend>
+                            <div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="emotional_vibe" id="gridRadios1"
+                                           value="Heavy-hearted">
+                                    <label class="form-check-label" for="gridRadios1">
+                                        Heavy-hearted
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="emotional_vibe" id="gridRadios2"
+                                           value="Neutral" checked>
+                                    <label class="form-check-label" for="gridRadios2">
+                                        Neutral
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="emotional_vibe" id="gridRadios3"
+                                           value="Lighthearted">
+                                    <label class="form-check-label" for="gridRadios3">
+                                        Lighthearted
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- mental vibe radio buttons -->
+                    <fieldset class="form-group">
+                        <div>
+                            <legend>Mental vibe</legend>
+                            <div class=>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="mental_vibe" id="mental_radio1"
+                                           value="Thought-provoking">
+                                    <label class="form-check-label" for="mental_radio1">
+                                        Thought-provoking
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="mental_vibe" id="mental_radio2"
+                                           value="Neutral" checked>
+                                    <label class="form-check-label" for="mental_radio2">
+                                        Neutral
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="mental_vibe" id="mental_radio3"
+                                           value="Brainless">
+                                    <label class="form-check-label" for="mental_radio3">
+                                        Brainless
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

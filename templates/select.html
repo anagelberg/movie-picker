@@ -18,8 +18,7 @@
   {% for movie in movies %}
   <p>
     {% if movie["id"] not in movie_id_list: %}
-    <a href="{{ url_for('add_movie',  movie_id=movie['id'],
-                                      list_name=list_name)}}"
+    <a href="{{ url_for('select_vibe',  movie_id=movie['id'])}}"
                     class="btn btn-primary">+</a>
     {% else: %}
     <a href="" class="btn disabled btn-secondary" >✓</a>
@@ -29,4 +28,8 @@
   {% endfor %}
 
 </div>
+
+
 {% endblock %}
+
+{% include "footer.html" %}

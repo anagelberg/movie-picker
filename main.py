@@ -1,20 +1,21 @@
 from flask import Flask, render_template, redirect, url_for, request
 import requests
-from app import db, Movie, MovieList, app
+from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
-from forms import AddMovieForm, RateMovieForm, NewWatchlistForm
-
-# To do- Wednesday
-# TODO: Edit page for movie/manual entry button
-# TODO: Can select page go under the search box?
+from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm, VibeForm
+from flask_modals import render_template_modal
 
 # To Do - Thursday
+# TODO: Add modal for entry of vibe
 # TODO: Add movie picker functionality
 # TODO: Add "watched" feature
+# TODO: Edit page for movie/manual entry button
+# TODO: Can select page go under the search box?
+# TODO: (begin_) Make PRETTY
 
 # To do- Friday
-# TODO: Make PRETTY
-# TODO: Requirements
+
+# TODO: Requirements file
 # TODO: Make comments on code
 # TODO: Make instructional README
 # TODO: Download on Jesse's computer
@@ -30,10 +31,12 @@ db.create_all()
 db_manager = DbManager()
 search_manager = SearchManager()
 
+
 @app.route("/")
 def home():
     all_lists = MovieList.query.all()
     return render_template("index.html", watchlists=all_lists)
+
 
 @app.route("/new-movie-list", methods=["GET", "POST"])
 def add_list():
@@ -61,22 +64,34 @@ def edit(movie_id):
     return render_template("edit.html", form=edit_form, movie=movie_to_update)
 
 
-# Form to add movie, searches based on title and sends to select page
-@app.route("/add/<watchlist_id>", methods=["GET", "POST"])
-def add(watchlist_id):
-    add_form = AddMovieForm()
+# Form to search_movie_titles movie, searches based on title and sends to select page
+@app.route("/search_movie_titles/<watchlist_id>", methods=["GET", "POST"])
+def search_movie_titles(watchlist_id):
+    search_form = SearchMovieForm()
     db_manager.current_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
-    if add_form.validate_on_submit():
-        search_manager.search_tmdb_titles(title=add_form.movie.data)
+    if search_form.validate_on_submit():
+        search_manager.search_tmdb_titles(title=search_form.movie.data)
         db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
-        return render_template("select.html", movies=search_manager.title_results,
-                               movie_id_list=db_manager.current_id_list)
-    return render_template("add.html", form=add_form)
+        return redirect(url_for('select_movie'))
+    return render_template("search_movie_titles.html", form=search_form)
 
-# Adds the movie details to the database sent from select
-@app.route("/add-movie/<movie_id>")
-def add_movie(movie_id):
-    search_manager.search_tmdb_details(movie_id)
+
+@app.route("/select-movie")
+def select_movie():
+    return render_template("select.html", movies=search_manager.title_results,
+                           movie_id_list=db_manager.current_id_list)
+
+
+@app.route("/select_vibe/<movie_id>", methods=["GET", "POST"])
+def select_vibe(movie_id):
+    search_manager.movie_id_to_add = movie_id
+    return render_template_modal("vibe_selector.html")
+
+
+# Adds the movie details to the database sent from select and the vibe-selector form
+@app.route("/add-movie", methods=["POST"])
+def add_movie():
+    search_manager.search_tmdb_details(search_manager.movie_id_to_add)
 
     # Add the movie to the database
     new_movie = Movie(
@@ -91,16 +106,18 @@ def add_movie(movie_id):
         watched="False",
         genre=search_manager.movie_data["genre_string"],
         tmdb_id=search_manager.movie_data['id'],
-        movie_list=db_manager.current_watchlist
-     )
+        movie_list=db_manager.current_watchlist,
+        emotional_vibe=request.form['emotional_vibe'],
+        mental_vibe=request.form['mental_vibe']
+    )
 
     db.session.add(new_movie)
     db.session.commit()
 
     db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+    search_manager.added()
     return render_template("select.html", movies=search_manager.title_results,
                            movie_id_list=db_manager.current_id_list)
-
 
 
 # Deletes a movie
@@ -110,6 +127,7 @@ def delete(movie_id):
     db.session.delete(movie_to_delete)
     db.session.commit()
     return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
