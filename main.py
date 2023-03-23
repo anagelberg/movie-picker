@@ -6,7 +6,6 @@ from forms import AddMovieForm, RateMovieForm, NewWatchlistForm
 
 # To do- Wednesday
 # TODO: Edit page for movie/manual entry button
-# TODO: NavBar
 # TODO: Can select page go under the search box?
 
 # To Do - Thursday
