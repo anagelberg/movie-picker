@@ -6,7 +6,6 @@
 	 line-height: 1.5;
 	 font-weight: 300;
 	 color: #333;
-	 font-family: "Nunito Sans", sans-serif;
 }
  body {
 	 margin: 0;
@@ -24,7 +23,7 @@
 	 justify-content: center;
 	 align-items: center;
 	 flex-wrap: wrap;
-	 max-width: 1500px;
+	 /*max-width: 1500px;*/
 }
  p.overview {
 	 font-size: 12px;
@@ -43,15 +42,7 @@
 	 margin-bottom: 1rem;
 	 position: relative;
 }
- .heading:after {
-	 display: block;
-	 content: '';
-	 position: absolute;
-	 width: 60px;
-	 height: 4px;
-	 background: linear-gradient(135deg, #1a9be6, #1a57e6);
-	 bottom: 0;
-}
+
  .description {
 	 width: 100%;
 	 margin-top: 0;
@@ -79,6 +70,13 @@
 		 width: 100%;
 	}
 }
+
+.form-check-label{
+       padding-left: 2rem;
+}
+
+
+
  .front, .back {
 	 display: flex;
 	 border-radius: 6px;
@@ -102,7 +100,6 @@
 	 font-weight: 600;
 	 color: #fff;
 	 overflow: hidden;
-	 font-family: Poppins, sans-serif;
 }
  .front:before {
 	 position: absolute;
@@ -125,7 +122,7 @@
  .back {
 	 background: #fff;
 	 transform: rotateY(-180deg);
-	 padding: 0 2em;
+	 padding: 0 2rem;
 }
  .card:hover .back {
 	 transform: rotateY(0deg);

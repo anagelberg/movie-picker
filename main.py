@@ -6,7 +6,6 @@ from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm, VibeForm
 from flask_modals import render_template_modal
 
 # To Do - Thursday
-# TODO: Add modal for entry of vibe
 # TODO: Add movie picker functionality
 # TODO: Add "watched" feature
 # TODO: Edit page for movie/manual entry button
@@ -24,7 +23,8 @@ from flask_modals import render_template_modal
 # Other
 # TODO: Same movie different list?
 # TODO: trycatch errors: double click
-
+# TODO: Try TV shows
+# TODO: talk to letterboxd
 
 db.create_all()
 
@@ -119,13 +119,34 @@ def add_movie():
     return render_template("select.html", movies=search_manager.title_results,
                            movie_id_list=db_manager.current_id_list)
 
-
 # Deletes a movie
 @app.route("/delete/<movie_id>")
 def delete(movie_id):
     movie_to_delete = Movie.query.filter_by(id=movie_id).first()
     db.session.delete(movie_to_delete)
     db.session.commit()
+    return redirect(url_for('home'))
+
+
+@app.route("/movie_jar", methods=["GET", "POST"])
+def movie_jar():
+    #TODO: make max runtime dynamic
+    #TODO: add genres into it
+    db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
+    if request.method == "POST":
+        print(request.form["max_runtime"])
+        print(request.form.getlist('emotional_vibe'))
+        print(request.form.getlist('mental_vibe'))
+        print(request.form["movie_list_dropdown"])
+        print(request.form.getlist("genre_dropdown"))
+        return redirect(url_for('home'))
+    return render_template("movie_jar.html",
+                           genres=db_manager.all_genres,
+                           watchlists=db_manager.all_watchlists)
+
+
+@app.route("/test", methods=["GET", "POST"])
+def test():
     return redirect(url_for('home'))
 
 

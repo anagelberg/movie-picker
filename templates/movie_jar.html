@@ -1,0 +1,104 @@
+{% extends 'bootstrap/base.html' %}
+{% include "header.html" %}
+
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+{% endblock %}
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$("#myModal").modal('show');
+	});
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Movie options</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Select options for a movie you'd like to watch. </p>
+                <form action="{{ url_for('movie_jar') }}" method="post">
+                    <!-- Dropdown: available movie lists -->
+
+                    <div class="form-group">
+                        <label for="movie_list_dropdown">Select Watchlist:</label>
+                        <select class="form-control" name="movie_list_dropdown" id="movie_list_dropdown">
+                            {% for watchlist in watchlists %}
+                            <option>{{ watchlist }}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <!-- Max runtime (minutes) -->
+                    <div>
+                        <label for="max_runtime_slider">Max Runtime (mins): </label>
+                        <input type="range" name="max_runtime" value="120" min="20" max="300"
+                               oninput="this.nextElementSibling.value = this.value" id="max_runtime_slider">
+                        <output>120</output>
+                    </div>
+                    <!-- Emotional Vibe -->
+                    <div class="form-group">
+                        <label>Emotional Vibe</label>
+                        <div class="form-check">
+                            <input type="checkbox" name="emotional_vibe" value="Heavy-hearted" id="heavy-hearted_check">
+                            <label class="form-check-label" for="heavy-hearted_check">Heavy-hearted</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="emotional_vibe" value="Neutral" checked
+                                   id="emotionally_neutral_check">
+                            <label class="form-check-label" for="emotionally_neutral_check">Neutral</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="emotional_vibe" value="Lighthearted" id="lighthearted_check">
+                            <label class="form-check-label" for="lighthearted_check">Lighthearted</label>
+                        </div>
+                    </div>
+                    <!-- Mental Vibe -->
+                    <div class="form-group">
+                        <label>Mental Vibe</label>
+                        <div class="form-check">
+                            <input type="checkbox" name="mental_vibe" value="Thought-provoking"
+                                   id="thought-provoking_check">
+                            <label class="form-check-label" for="thought-provoking_check">Thought-provoking</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="mental_vibe" value="Neutral" checked
+                                   id="mentally_neutral_check">
+                            <label class="form-check-label" for="mentally_neutral_check">Neutral</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="mental_vibe" value="Brainless" id="brainless_check">
+                            <label class="form-check-label" for="brainless_check">Brainless</label>
+                        </div>
+                    </div>
+                    <!-- Genres -->
+
+                    <div class="form-group">
+                        <label for="genre-multiple-group">Select Genres:</label>
+                        <select multiple class="form-control" name="genre_selection" id="genre-multiple-group">
+                            {% for genre in genres %}
+                            <option selected="selected">{{ genre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Go</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

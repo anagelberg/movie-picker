@@ -7,6 +7,16 @@ class DbManager():
         self.current_watchlist = None
         self.current_id_list = None
         self.movie_id_to_add = None
+        self.all_genres = None
+        self.all_watchlists = None
+
+    def get_data(self, all_movies, all_watchlists):
+        all_genres = []
+        for movie in all_movies:
+            for genre in movie.genre.split(","):
+                all_genres.append(genre)
+        self.all_genres = list(set(all_genres))
+        self.all_watchlists = [list.name for list in all_watchlists]
 
 
 class SearchManager():
