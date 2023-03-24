@@ -4,27 +4,26 @@ from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
 from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm, VibeForm
 from flask_modals import render_template_modal
+import sqlite3
+from sqlite3 import OperationalError
 
-# To Do - Thursday
-# TODO: Add movie picker functionality
+# To Do - Friday
+# TODO: Finish movie picker functionality
 # TODO: Add "watched" feature
 # TODO: Edit page for movie/manual entry button
 # TODO: Can select page go under the search box?
 # TODO: (begin_) Make PRETTY
 
-# To do- Friday
-
+# Next week:
+# TODO: Same movie different list?
+# TODO: trycatch errors: double click
+# TODO: Try TV shows
+# TODO: talk to letterboxd
 # TODO: Requirements file
 # TODO: Make comments on code
 # TODO: Make instructional README
 # TODO: Download on Jesse's computer
 # TODO: Add to Portfolio :)
-
-# Other
-# TODO: Same movie different list?
-# TODO: trycatch errors: double click
-# TODO: Try TV shows
-# TODO: talk to letterboxd
 
 db.create_all()
 
@@ -119,6 +118,7 @@ def add_movie():
     return render_template("select.html", movies=search_manager.title_results,
                            movie_id_list=db_manager.current_id_list)
 
+
 # Deletes a movie
 @app.route("/delete/<movie_id>")
 def delete(movie_id):
@@ -130,15 +130,12 @@ def delete(movie_id):
 
 @app.route("/movie_jar", methods=["GET", "POST"])
 def movie_jar():
-    #TODO: make max runtime dynamic
-    #TODO: add genres into it
+    # TODO: make max runtime dynamic
+    # TODO: add genres into it
     db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
     if request.method == "POST":
-        print(request.form["max_runtime"])
-        print(request.form.getlist('emotional_vibe'))
-        print(request.form.getlist('mental_vibe'))
-        print(request.form["movie_list_dropdown"])
-        print(request.form.getlist("genre_dropdown"))
+        db_manager.filter_movies(request.form)
+        print([movie.title for movie in db_manager.filtered_movies])
         return redirect(url_for('home'))
     return render_template("movie_jar.html",
                            genres=db_manager.all_genres,

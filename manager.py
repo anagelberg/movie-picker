@@ -7,16 +7,29 @@ class DbManager():
         self.current_watchlist = None
         self.current_id_list = None
         self.movie_id_to_add = None
-        self.all_genres = None
+        self.all_genres = []
         self.all_watchlists = None
 
     def get_data(self, all_movies, all_watchlists):
-        all_genres = []
         for movie in all_movies:
             for genre in movie.genre.split(","):
-                all_genres.append(genre)
-        self.all_genres = list(set(all_genres))
+                if genre.strip() not in self.all_genres:
+                    self.all_genres.append(genre.strip())
         self.all_watchlists = [list.name for list in all_watchlists]
+
+    def filter_movies(self, form_data):
+        from app import Movie, MovieList
+        pre_filtered_movies = Movie.query.filter(Movie.run_time <= form_data["max_runtime"],
+                                                 Movie.emotional_vibe.in_(form_data.getlist('emotional_vibe')),
+                                                 Movie.mental_vibe.in_(form_data.getlist('mental_vibe')),
+                                                 Movie.id.in_([movie.id for movie in MovieList.query.filter_by(
+                                                     name=form_data["movie_list_dropdown"]).first().movies])).all()
+
+        self.filtered_movies = []
+        for movie in pre_filtered_movies:
+            if any(genre in movie.genre for genre in form_data.getlist("genre_selection")):
+                self.filtered_movies.append(movie)
+        self.filtered_movies.sort(key=lambda x: x.pop_rating, reverse=True)  # sort descending
 
 
 class SearchManager():
