@@ -17,10 +17,13 @@
 		$("#myModal").modal('show');
 	});
 
+
 </script>
 {% endblock %}
 
 {% block content %}
+{% if not movies %}
+<!-- Modal -->
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -44,7 +47,7 @@
                     <!-- Max runtime (minutes) -->
                     <div>
                         <label for="max_runtime_slider">Max Runtime (mins): </label>
-                        <input type="range" name="max_runtime" value="120" min="20" max="300"
+                        <input type="range" name="max_runtime" value="300" min="20" max="300"
                                oninput="this.nextElementSibling.value = this.value" id="max_runtime_slider">
                         <output>120</output>
                     </div>
@@ -52,7 +55,8 @@
                     <div class="form-group">
                         <label>Emotional Vibe</label>
                         <div class="form-check">
-                            <input type="checkbox" name="emotional_vibe" value="Heavy-hearted" id="heavy-hearted_check">
+                            <input type="checkbox" name="emotional_vibe" value="Heavy-hearted" checked
+                                   id="heavy-hearted_check">
                             <label class="form-check-label" for="heavy-hearted_check">Heavy-hearted</label>
                         </div>
                         <div class="form-check">
@@ -61,7 +65,8 @@
                             <label class="form-check-label" for="emotionally_neutral_check">Neutral</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="emotional_vibe" value="Lighthearted" id="lighthearted_check">
+                            <input type="checkbox" name="emotional_vibe" value="Lighthearted" checked
+                                   id="lighthearted_check">
                             <label class="form-check-label" for="lighthearted_check">Lighthearted</label>
                         </div>
                     </div>
@@ -69,7 +74,7 @@
                     <div class="form-group">
                         <label>Mental Vibe</label>
                         <div class="form-check">
-                            <input type="checkbox" name="mental_vibe" value="Thought-provoking"
+                            <input type="checkbox" name="mental_vibe" value="Thought-provoking" checked
                                    id="thought-provoking_check">
                             <label class="form-check-label" for="thought-provoking_check">Thought-provoking</label>
                         </div>
@@ -79,7 +84,7 @@
                             <label class="form-check-label" for="mentally_neutral_check">Neutral</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="mental_vibe" value="Brainless" id="brainless_check">
+                            <input type="checkbox" name="mental_vibe" value="Brainless" checked id="brainless_check">
                             <label class="form-check-label" for="brainless_check">Brainless</label>
                         </div>
                     </div>
@@ -101,4 +106,44 @@
         </div>
     </div>
 </div>
+<!-- End modal -->
+
+{% else %}
+<!-- Other content -->
+<h1>Top Pick</h1>
+<div class="card-group">
+    <div class="card" style="z-index: 1;">
+        <div class="top-pick top" style="background-image: url({{ movies[0].img_url }});">
+        </div>
+        <div class="card">
+            <div class="top-pick" style="background-image: url({{ movies[0].img_url }});">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card text-white bg-dark w-100" style = "top:-20px; z-index:0; overflow:hidden;">
+  <div class="card-body" style="padding:2rem;">
+      <h1 class="card-title" style="padding:0;">{{ movies[0].title }} ({{movies[0].year }})</h1>
+       <div class="rating">
+            <h3 class="card-title">{{movies[0].pop_rating }}/10 <i class="fas fa-star star"></i></h3>
+           </div>
+            <h6 class="card-subtitle mb-2 text-muted">Genres: {{movies[0].genre}}</h6>
+           <h6 class="card-subtitle mb-2 text-muted">Mental vibe: {{movies[0].mental_vibe}}</h6>
+           <h6 class="card-subtitle mb-2 text-muted">Emotional vibe: {{movies[0].emotional_vibe}}</h6>
+    <p class="card-text">{{movies[0].description}}</p>
+      <p class="card-text"><small class="text-muted">Runtime: {{movies[0].run_time}} minutes</small></p>
+
+      <div class="card-footer">
+    <a class="btn btn-light" href="#" role="button">Where to watch</a> <!-- make work and make height dynamic -->
+  </div>
+
+  </div>
+</div>
+
+
+<h1>More options</h1>
+
+
+{% endif %}
 {% endblock %}

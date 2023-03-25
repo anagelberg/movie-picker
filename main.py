@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request
 import requests
 from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
-from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm, VibeForm
+from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm
 from flask_modals import render_template_modal
 import sqlite3
 from sqlite3 import OperationalError
@@ -135,8 +135,8 @@ def movie_jar():
     db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
     if request.method == "POST":
         db_manager.filter_movies(request.form)
-        print([movie.title for movie in db_manager.filtered_movies])
-        return redirect(url_for('home'))
+        return render_template("movie_jar.html",
+                               movies=db_manager.filtered_movies)
     return render_template("movie_jar.html",
                            genres=db_manager.all_genres,
                            watchlists=db_manager.all_watchlists)
