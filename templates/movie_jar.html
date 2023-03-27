@@ -141,8 +141,43 @@
   </div>
 </div>
 
-
+<!-- other options -->
 <h1>More options</h1>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+    {% for movie in movies[1:] %}
+    <!-- one card -->
+    <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+        <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
+        </div>
+        <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
+            <div>
+                <div class="title">{{ movie.title }} <br></div>
+                <div class="rating">
+                    <label>{{ movie.pop_rating }}</label>
+                    <i class="fas fa-star star"></i>
+                </div>
+                <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
+                <p class="run_time">{{ movie.run_time }} minutes</p>
+                <p class="overview">
+                    {{ movie.description }}
+                </p>
+
+                <a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Update</a>
+                <a href="{{ url_for('delete', movie_id=movie.id) }}" class="button delete-button">Delete</a>
+
+            </div>
+        </div>
+    </div>
+    <!-- end card -->
+    {% endfor %}
+    </div>
+        </div>
+
+
+
+
 
 
 {% endif %}

@@ -46,5 +46,3 @@ class MovieList(db.Model):
     name = db.Column(db.String(250), unique=True, nullable=False)
     description = db.Column(db.String(500), unique=False, nullable=True)
     movies = relationship("Movie", back_populates="movie_list")
-
-

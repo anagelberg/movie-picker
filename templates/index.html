@@ -11,39 +11,75 @@
 {% block content %}
 <a href="{{ url_for('test') }}" class="button">TEST</a>
 
-<div class="container">
-  <h1 class="heading">My Watchlists</h1>
-  <p class="description">These are the movies I'd like to watch.</p>
+<div class="container-fluid">
 
+  <h1 class="heading">My Movie Jars</h1>
+
+
+    <div class="accordion" id="accordionExample">
+
+
+
+        <div class="card">
+
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                        Collapsible Group Item #1
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit
+                </div>
+            </div>
+
+        </div> <!-- ends card -->
+
+
+    </div> <!-- ends accordion -->
+
+
+    <!-- Movie lists -->
     {% for movie_list in watchlists %}
     <h2 class="heading">{{movie_list.name}}</h2>
     <p class="description">{{movie_list.description}}</p>
+    <!-- display movie area -->
+    <div class="container-fluid">
+        <div class="row justify-content-center">
     {% for movie in movie_list.movies %}
-  <div class="card" >
-    <div class="front" style="background-image: url({{ movie.img_url }});">
-    </div>
-    <div class="back">
-      <div>
-    <div class="title">{{ movie.title }} <br></div>
-        <div class="rating">
-            <label>{{ movie.pop_rating }}</label>
-          <i class="fas fa-star star"></i>
+    <!-- one card -->
+    <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+        <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
         </div>
-          <p class="genre">{{ movie.genre }}</p>
-          <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
-          <p class="run_time">{{ movie.run_time }} minutes</p>
-        <p class="overview">
-            {{ movie.description }}
-        </p>
+        <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
+            <div>
+                <div class="title">{{ movie.title }} <br></div>
+                <div class="rating">
+                    <label>{{ movie.pop_rating }}</label>
+                    <i class="fas fa-star star"></i>
+                </div>
+                <p class="genre">{{ movie.genre }}</p>
+                <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
+                <p class="run_time">{{ movie.run_time }} minutes</p>
+                <p class="overview">
+                    {{ movie.description }}
+                </p>
 
-        <a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Update</a>
-        <a href="{{ url_for('delete', movie_id=movie.id) }}" class="button delete-button">Delete</a>
+                <a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Update</a>
+                <a href="{{ url_for('delete', movie_id=movie.id) }}" class="button delete-button">Delete</a>
 
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
-
+    <!-- end card -->
     {% endfor %}
+    </div>
+        </div>
+    <!--end movie display -->
 
 <div class="container text-center add">
 <a href="{{ url_for('search_movie_titles', watchlist_id=movie_list.id) }}" class="button">Add Movie</a>

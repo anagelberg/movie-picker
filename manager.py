@@ -2,8 +2,9 @@ import os
 import requests
 
 
-class DbManager():
+class DbManager:
     def __init__(self):
+        self.filtered_movies = None
         self.current_watchlist = None
         self.current_id_list = None
         self.movie_id_to_add = None
@@ -15,7 +16,7 @@ class DbManager():
             for genre in movie.genre.split(","):
                 if genre.strip() not in self.all_genres:
                     self.all_genres.append(genre.strip())
-        self.all_watchlists = [list.name for list in all_watchlists]
+        self.all_watchlists = [li.name for li in all_watchlists]
 
     def filter_movies(self, form_data):
         from app import Movie, MovieList
@@ -32,7 +33,7 @@ class DbManager():
         self.filtered_movies.sort(key=lambda x: x.pop_rating, reverse=True)  # sort descending
 
 
-class SearchManager():
+class SearchManager:
     def __init__(self):
         self.title_results = None
         self.movie_data = None
