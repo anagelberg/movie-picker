@@ -4,21 +4,19 @@ from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
 from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm
 from flask_modals import render_template_modal
-import sqlite3
-from sqlite3 import OperationalError
 
-# To Do - Friday
-# TODO: Finish movie picker functionality
+
+
 # TODO: Add "watched" feature
 # TODO: Edit page for movie/manual entry button
 # TODO: Can select page go under the search box?
 # TODO: (begin_) Make PRETTY
-
-# Next week:
 # TODO: Same movie different list?
 # TODO: trycatch errors: double click
-# TODO: Try TV shows
+# TODO: Try TV show search
 # TODO: talk to letterboxd
+
+# When ready to publish:
 # TODO: Requirements file
 # TODO: Make comments on code
 # TODO: Make instructional README
