@@ -77,13 +77,13 @@ for (i = 0; i < coll.length; i++) {
     <!--end movie display -->
 
 <div class="container text-center add">
-<a href="{{ url_for('search_movie_titles', watchlist_id=movie_list.id) }}" class="button">Add Movie</a>
+<a href="{{ url_for('show_search_screen', watchlist_id=movie_list.id) }}" class="button">Add Movie</a>
 </div>
 </div>
     {%endfor %}
 
     <!-- get button to work -->
-    <form action="{{url_for('add_list')}}">
+    <form action="{{url_for('create_list')}}">
          <button class="collapsible" type="submit" style="margin : 1px; fontsize: 14px;">+ Create new movie jar</button>
       </form>
 

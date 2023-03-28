@@ -2,12 +2,11 @@ from flask import Flask, render_template, redirect, url_for, request
 import requests
 from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
-from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm
+from forms import SearchMovieForm, RateMovieForm
 from flask_modals import render_template_modal
 
 
 # NECESSARY
-#TODO: fix form error issue
 # TODO: !Add "watched" feature / own list
 # TODO: !Edit page for movie/manual entry button
 # TODO: (begin_) Make PRETTY
@@ -39,19 +38,20 @@ def home():
     return render_template("index.html", watchlists=all_lists)
 
 
-@app.route("/new-movie-list", methods=["GET", "POST"])
+@app.route("/new-movie-list", methods=["POST"])
 def add_list():
-    add_form = NewWatchlistForm()
-    if add_form.validate_on_submit():
-        new_list = MovieList(
-            name=add_form.list_name.data,
-            description=add_form.description.data
+    new_list = MovieList(
+        name=request.form["watchlist_name"],
+        description=request.form["watchlist_description"]
         )
-        db.session.add(new_list)
-        db.session.commit()
-        return redirect(url_for('home'))
-    return render_template("new_movie_list.html", form=add_form)
+    db.session.add(new_list)
+    db.session.commit()
+    return redirect(url_for('home'))
 
+
+@app.route("/create-list")
+def create_list():
+    return render_template("add_new_movie_jar.html")
 
 # Edit rating
 @app.route("/edit/<movie_id>", methods=["GET", "POST"])
@@ -64,21 +64,16 @@ def edit(movie_id):
         return redirect(url_for('home'))
     return render_template("edit.html", form=edit_form, movie=movie_to_update)
 
-
-# Form to search_movie_titles movie, searches based on title and sends to select page
-@app.route("/search_movie_titles/<watchlist_id>", methods=["GET", "POST"])
-def search_movie_titles(watchlist_id):
-    search_form = SearchMovieForm()
+@app.route("/show_search_screen/<watchlist_id>")
+def show_search_screen(watchlist_id):
     db_manager.current_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
-    if search_form.validate_on_submit():
-        search_manager.search_tmdb_titles(title=search_form.movie.data)
-        db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
-        return redirect(url_for('select_movie'))
-    return render_template("search_movie_titles.html", form=search_form)
+    db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+    return render_template("search_movie_titles.html")
 
 
-@app.route("/select-movie")
+@app.route("/select-movie", methods=["POST"])
 def select_movie():
+    search_manager.search_tmdb_titles(title=request.form["search_entry"])
     return render_template("select.html", movies=search_manager.title_results,
                            movie_id_list=db_manager.current_id_list)
 
