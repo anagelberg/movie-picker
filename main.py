@@ -6,17 +6,21 @@ from forms import SearchMovieForm, RateMovieForm, NewWatchlistForm
 from flask_modals import render_template_modal
 
 
-
-# TODO: Add "watched" feature
-# TODO: Edit page for movie/manual entry button
-# TODO: Can select page go under the search box?
+# NECESSARY
+#TODO: fix form error issue
+# TODO: !Add "watched" feature / own list
+# TODO: !Edit page for movie/manual entry button
 # TODO: (begin_) Make PRETTY
-# TODO: Same movie different list?
+# TODO: !Same movie different list?
+
+
+# Nice-to-haves
 # TODO: trycatch errors: double click
 # TODO: Try TV show search
 # TODO: talk to letterboxd
 
-# When ready to publish:
+
+# When ready to publish: FRIDAY
 # TODO: Requirements file
 # TODO: Make comments on code
 # TODO: Make instructional README

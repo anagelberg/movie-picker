@@ -1,6 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% include "header.html" %}
+<!--{% include "header.html" %} -->
 
 {% block styles %}
   {{ super() }}
@@ -10,6 +10,7 @@
 {% block title %}Create new list{% endblock %}
 
 {% block content %}
+<h1> This is where you would create a new list. </h1>
 <div class="content">
     <h1 class="heading">Create a new watchlist</h1>
     {{ wtf.quick_form(form, novalidate=True) }}
