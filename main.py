@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request
-import requests
-from app import db, Movie, MovieList, app, modal
+#import requests
+from app import db, Movie, MovieList, app#, modal
 from manager import DbManager, SearchManager
-from flask_modals import render_template_modal
+#from flask_modals import render_template_modal
+
 
 
 # NECESSARY
@@ -25,6 +26,7 @@ from flask_modals import render_template_modal
 # TODO: Download on Jesse's computer
 # TODO: Add to Portfolio :)
 
+#db.drop_all()
 db.create_all()
 
 db_manager = DbManager()
@@ -90,13 +92,13 @@ def select_vibe(movie_id):
         return redirect(url_for("home"))
     else:
         search_manager.movie_id_to_add = movie_id
-        return render_template_modal("vibe_selector.html")
+        return render_template("vibe_selector.html")
 
 
 # Adds the movie details to the database sent from select and the vibe-selector form
 @app.route("/add-movie", methods=["POST"])
 def add_movie():
-    search_manager.search_tmdb_details(tmdb_id =search_manager.movie_id_to_add)
+    search_manager.search_tmdb_details(tmdb_id=search_manager.movie_id_to_add)
 
     # Add the movie to the database
     new_movie = Movie(
@@ -111,10 +113,11 @@ def add_movie():
         watched="False",
         genre=search_manager.movie_data["genre_string"],
         tmdb_id=search_manager.movie_data['id'],
-        movie_list=db_manager.current_watchlist,
         emotional_vibe=request.form['emotional_vibe'],
         mental_vibe=request.form['mental_vibe']
     )
+
+    new_movie.movie_list.append(db_manager.current_watchlist)
 
     db.session.add(new_movie)
     db.session.commit()
@@ -126,10 +129,11 @@ def add_movie():
 
 
 # Deletes a movie
-@app.route("/delete_movie/<movie_id>")
-def delete_movie(movie_id):
+@app.route("/delete_movie/<watchlist_id>/<movie_id>")
+def delete_movie(watchlist_id, movie_id):
     movie_to_delete = Movie.query.filter_by(id=movie_id).first()
-    db.session.delete(movie_to_delete)
+    from_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
+    from_watchlist.movies.remove(movie_to_delete)
     db.session.commit()
     return redirect(url_for('home'))
 

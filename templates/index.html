@@ -71,7 +71,7 @@ for (i = 0; i < coll.length; i++) {
                 </p>
 
                 <a href="{{ url_for('show_edit_page', movie_id=movie.id) }}" class="button">Edit</a>
-                <a href="{{ url_for('delete_movie', movie_id=movie.id) }}" class="button delete-button">Delete</a>
+                <a href="{{ url_for('delete_movie', watchlist_id=movie_list.id , movie_id=movie.id) }}" class="button delete-button">Delete</a>
 
             </div>
         </div>

@@ -3,10 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
 from sqlalchemy.orm import relationship
-from flask_modals import Modal
+#from flask_modals import Modal
+#from __future__ import annotations
+
+from sqlalchemy import Column
+from sqlalchemy import Table
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
-modal = Modal(app)
+#modal = Modal(app)
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # Create in app
@@ -16,6 +26,22 @@ db = SQLAlchemy(app)
 
 app.app_context().push()
 Bootstrap(app)
+
+movie_watchlist_association = db.Table('movie_watchlist_association',
+                                db.Column('movie_id', db.Integer, db.ForeignKey('movies.id')),
+                                db.Column('movielist_id', db.Integer, db.ForeignKey('movie_lists.id'))
+                                    )
+
+
+# Create Movie List Table
+class MovieList(db.Model):
+    __tablename__ = "movie_lists"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(250), unique=True, nullable=False)
+    description = db.Column(db.String(500), unique=False, nullable=True)
+
+    def __repr__(self):
+        return f'<MovieList "{self.name}">'
 
 
 # Create Movie Table
@@ -35,14 +61,12 @@ class Movie(db.Model):
     tmdb_id = db.Column(db.String(50), nullable=False)
     emotional_vibe = db.Column(db.String(20), nullable=False)
     mental_vibe = db.Column(db.String(20), nullable=False)
-    movie_list = relationship("MovieList", back_populates="movies")
-    movie_list_id = db.Column(db.Integer, db.ForeignKey('movie_lists.id'))
+    movie_list = db.relationship("MovieList", secondary=movie_watchlist_association, backref="movies")
+
+    def __repr__(self):
+        return f'<Movie "{self.name}">'
 
 
-# Create Movie List Table
-class MovieList(db.Model):
-    __tablename__ = "movie_lists"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), unique=True, nullable=False)
-    description = db.Column(db.String(500), unique=False, nullable=True)
-    movies = relationship("Movie", back_populates="movie_list")
+
+
+
