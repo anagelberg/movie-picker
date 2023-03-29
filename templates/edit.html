@@ -1,20 +1,78 @@
 {% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% include "header.html" %}
+
 
 {% block styles %}
   {{ super() }}
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,700">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 {% endblock %}
 
-{% block title %}Edit Movies{% endblock %}
+{% block scripts %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+	$(document).ready(function(){
+		$("#editMovie").modal('show');
+	});
+    </script>
+{% endblock %}
 
 {% block content %}
-<div class="content">
-  <h1 class="heading">{{ movie.title }}</h1>
-    <p class="description">Edit Movie Rating</p>
-    {{ wtf.quick_form(form, novalidate=True) }}
-  </div>
+<div id="editMovie" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit movie entry</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('edit', movie_id=movie.id) }}" method="post">
+
+                    <div class="form-group">
+                        <label for="movie-title">Title</label>
+                        <input type="text" class="form-control" name="title" id="movie-title" value="{{ movie.title }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Year Released</label>
+                        <input type="text" class="form-control" name="year" id="year" value="{{ movie.year }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" rows="3" value="{{ movie.description }}"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="img-url-text">Image url</label>
+                        <input type="text" class="form-control" name="img-url-text" id="img-url-text" value="{{ movie.img_url }}">
+                    </div>
+
+
+
+
+
+
+                    <div class="form-group">
+                        <label for="title">Movie Title</label>
+                        <input type="text" class="form-control" name="title" id="title" value="{{ movie.title }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Movie Title</label>
+                        <input type="text" class="form-control" name="title" id="title" value="{{ movie.title }}" required>
+                    </div>
+
+
+
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

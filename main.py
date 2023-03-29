@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, url_for, request
 import requests
 from app import db, Movie, MovieList, app, modal
 from manager import DbManager, SearchManager
-from forms import SearchMovieForm, RateMovieForm
 from flask_modals import render_template_modal
 
 
@@ -53,16 +52,19 @@ def add_list():
 def create_list():
     return render_template("add_new_movie_jar.html")
 
-# Edit rating
-@app.route("/edit/<movie_id>", methods=["GET", "POST"])
-def edit(movie_id):
-    edit_form = RateMovieForm()
-    movie_to_update = Movie.query.filter_by(id=movie_id).first()
-    if edit_form.validate_on_submit():
-        movie_to_update.my_rating = edit_form.my_rating.data
-        db.session.commit()
-        return redirect(url_for('home'))
-    return render_template("edit.html", form=edit_form, movie=movie_to_update)
+@app.route("/show-edit-page/<movie_id>")
+def show_edit_page(movie_id):
+    db_manager.movie_to_update = Movie.query.filter_by(id=movie_id).first()
+    return render_template("edit.html", movie=db_manager.movie_to_update)
+
+# TODO: change to update all data
+@app.route("/edit/", methods=["POST"])
+def edit():
+    movie_to_update = Movie.query.filter_by(id=db_manager.movie_to_update.id).first()
+    movie_to_update.title = request.form["title"]
+    db.session.commit()
+    return redirect(url_for('home'))
+
 
 @app.route("/show_search_screen/<watchlist_id>")
 def show_search_screen(watchlist_id):
@@ -117,12 +119,21 @@ def add_movie():
 
 
 # Deletes a movie
-@app.route("/delete/<movie_id>")
-def delete(movie_id):
+@app.route("/delete_movie/<movie_id>")
+def delete_movie(movie_id):
     movie_to_delete = Movie.query.filter_by(id=movie_id).first()
     db.session.delete(movie_to_delete)
     db.session.commit()
     return redirect(url_for('home'))
+
+# Deletes a movie
+@app.route("/delete_movie_list/<watchlist_id>")
+def delete_movie_list(watchlist_id):
+    watchlist_to_delete = MovieList.query.filter_by(id=watchlist_id).first()
+    db.session.delete(watchlist_to_delete)
+    db.session.commit()
+    return redirect(url_for('home'))
+
 
 
 @app.route("/movie_jar", methods=["GET", "POST"])

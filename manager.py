@@ -10,6 +10,7 @@ class DbManager:
         self.movie_id_to_add = None
         self.all_genres = []
         self.all_watchlists = None
+        self.movie_to_update = None
 
     def get_data(self, all_movies, all_watchlists):
         for movie in all_movies:

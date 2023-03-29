@@ -93,7 +93,7 @@
 	 transform-style: preserve-3d;
 	 transition: ease-in-out 600ms;
 }
- .front .top-pick {
+ .front, .top-pick, .add_movie {
 	 background-size: cover;
 	 padding: 0rem;
 	 font-size: 1.618rem;
@@ -113,6 +113,28 @@
 	 opacity: 0.25;
 	 z-index: -1;
 }
+
+.add_movie {
+    opacity: .5;
+	z-index: -1;
+	border-style: dashed;
+	color: #000000;
+    display: flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+.add_movie:hover {
+    color:#009da3;
+    background-color: #f1f1f1;
+    font-style: bold;
+}
+
+
  .card:hover .front {
 	 transform: rotateY(180deg);
 }
