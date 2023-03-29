@@ -36,8 +36,9 @@ class DbManager:
 
 class SearchManager:
     def __init__(self):
-        self.title_results = None
-        self.movie_data = None
+        self.show_titles = None
+        self.movie_titles = None
+        self.media_data = None
         self.movie_id_to_add = None
         self.TMDB_API_KEY = os.environ['TMDB_API_KEY']
 
@@ -47,30 +48,46 @@ class SearchManager:
             'language': 'en-US',
             'query': title,
         }
+        # Search movies
         response = requests.get(url='https://api.themoviedb.org/3/search/movie', params=parameters)
         response.raise_for_status()
         data = response.json()
-        self.title_results = data['results']
+        self.movie_titles = data['results']
 
-    def search_tmdb_details(self, tmdb_id):
+        # Search TV shows
+        response = requests.get(url='https://api.themoviedb.org/3/search/tv', params=parameters)
+        response.raise_for_status()
+        data = response.json()
+        self.show_titles = data['results']
+
+
+    def search_tmdb_details(self, tmdb_id, media="movie"):
         parameters = {
             'api_key': self.TMDB_API_KEY,
         }
-        response = requests.get(url=f'https://api.themoviedb.org/3/movie/{tmdb_id}', params=parameters)
+        response = requests.get(url=f'https://api.themoviedb.org/3/{media}/{tmdb_id}', params=parameters)
         response.raise_for_status()
-        self.movie_data = response.json()
+        self.media_data = response.json()
 
-        if self.movie_data["poster_path"]:
-            self.movie_data["poster_url"] = self.movie_data["poster_path"]
-        elif self.movie_data['belongs_to_collection']:
-            self.movie_data["poster_url"] = self.movie_data['belongs_to_collection']['poster_path']
+        if self.media_data["poster_path"]:
+            self.media_data["poster_url"] = self.media_data["poster_path"]
+        elif self.media_data['belongs_to_collection']:
+            self.media_data["poster_url"] = self.media_data['belongs_to_collection']['poster_path']
         else:
             # TODO: make a placeholder?
-            self.movie_data["poster_url"] = None
+            self.media_data["poster_url"] = None
 
-        genre_list = [genre["name"] for genre in self.movie_data["genres"]]
-        self.movie_data["genre_string"] = ', '.join(genre_list)
+        genre_list = [genre["name"] for genre in self.media_data["genres"]]
+        self.media_data["genre_string"] = ', '.join(genre_list)
+
+        if media == "tv":
+            self.media_data["runtime"] = round(sum(
+                self.media_data["episode_run_time"])/len(self.media_data["episode_run_time"]))
+            self.media_data["title"] = self.media_data["name"]
+            self.media_data["release_date"] = self.media_data["first_air_date"]
+            self.media_data["imdb_id"] = None
+
 
     def added(self):
-        self.movie_data = None
+        self.media_data = None
         self.movie_id_to_add = None

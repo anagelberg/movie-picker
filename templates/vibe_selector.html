@@ -17,6 +17,14 @@
 		$("#myModal").modal('show');
 	});
     </script>
+
+
+    <script>
+        $('#vibe_form').submit(function(){
+            $(this).find(':input[type=submit]').prop('disabled', true);
+            });
+
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -29,7 +37,7 @@
             </div>
             <div class="modal-body">
                 <p>Choose the emotional and mental vibe of this movie.</p>
-                <form action="{{ url_for('add_movie') }}" method="post">
+                <form id=vibe_form action="{{ url_for('add_movie') }}" method="post">
 
                  <!-- emotional vibe radio buttons -->
                     <fieldset class="form-group">
@@ -92,7 +100,10 @@
                     </fieldset>
 
 
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" id="save_movie_submit" class="btn btn-primary"
+                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
+
+                        Save</button>
                 </form>
             </div>
         </div>

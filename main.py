@@ -5,13 +5,10 @@ from manager import DbManager, SearchManager
 #from flask_modals import render_template_modal
 
 
-
 # NECESSARY
 # TODO: !Add "watched" feature / own list
-# TODO: !Edit page for movie/manual entry button
+# TODO: !Edit page for movie/manual entry button OR TV show entry
 # TODO: (begin_) Make PRETTY
-# TODO: !Same movie different list?
-
 
 # Nice-to-haves
 # TODO: trycatch errors: double click
@@ -78,13 +75,15 @@ def show_search_screen(watchlist_id):
 @app.route("/select-movie", methods=["POST"])
 def select_movie():
     search_manager.search_tmdb_titles(title=request.form["search_entry"])
-    return render_template("select.html", movies=search_manager.title_results,
+    return render_template("select.html", movies=search_manager.movie_titles,
+                           shows=search_manager.show_titles,
                            movie_id_list=db_manager.current_id_list)
 
 
-@app.route("/select_vibe/<movie_id>", methods=["GET", "POST"])
-def select_vibe(movie_id):
+@app.route("/select_vibe/<movie_id>/<tv_or_movie>", methods=["GET", "POST"])
+def select_vibe(movie_id, tv_or_movie):
     movie_check = Movie.query.filter_by(tmdb_id=movie_id).first()
+    search_manager.show_or_movie = tv_or_movie
     if movie_check:
         watchlist = MovieList.query.filter_by(id=db_manager.current_watchlist.id).first()
         watchlist.movies.append(movie_check)
@@ -98,21 +97,21 @@ def select_vibe(movie_id):
 # Adds the movie details to the database sent from select and the vibe-selector form
 @app.route("/add-movie", methods=["POST"])
 def add_movie():
-    search_manager.search_tmdb_details(tmdb_id=search_manager.movie_id_to_add)
+    search_manager.search_tmdb_details(tmdb_id=search_manager.movie_id_to_add, media=search_manager.show_or_movie)
 
     # Add the movie to the database
     new_movie = Movie(
-        title=search_manager.movie_data["title"],
-        year=search_manager.movie_data["release_date"].split("-")[0],
-        description=search_manager.movie_data["overview"],
+        title=search_manager.media_data["title"],
+        year=search_manager.media_data["release_date"].split("-")[0],
+        description=search_manager.media_data["overview"],
         my_rating=None,
-        img_url=f"https://image.tmdb.org/t/p/original{search_manager.movie_data['poster_url']}",
-        run_time=search_manager.movie_data["runtime"],
-        pop_rating=search_manager.movie_data["vote_average"],
-        imdb_id=search_manager.movie_data["imdb_id"],
+        img_url=f"https://image.tmdb.org/t/p/original{search_manager.media_data['poster_url']}",
+        run_time=search_manager.media_data["runtime"],
+        pop_rating=search_manager.media_data["vote_average"],
+        imdb_id=search_manager.media_data["imdb_id"],
         watched="False",
-        genre=search_manager.movie_data["genre_string"],
-        tmdb_id=search_manager.movie_data['id'],
+        genre=search_manager.media_data["genre_string"],
+        tmdb_id=search_manager.media_data['id'],
         emotional_vibe=request.form['emotional_vibe'],
         mental_vibe=request.form['mental_vibe']
     )
@@ -124,8 +123,9 @@ def add_movie():
 
     db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
     search_manager.added()
-    return render_template("select.html", movies=search_manager.title_results,
-                           movie_id_list=db_manager.current_id_list)
+    return render_template("select.html",   movies=search_manager.movie_titles,
+                                            shows=search_manager.show_titles,
+                                            movie_id_list=db_manager.current_id_list)
 
 
 # Deletes a movie
