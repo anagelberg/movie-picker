@@ -69,7 +69,7 @@ def edit():
 @app.route("/show_search_screen/<watchlist_id>")
 def show_search_screen(watchlist_id):
     db_manager.current_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
-    db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+    db_manager.current_id_list = [int(movie.tmdb_id) for movie in db_manager.current_watchlist.movies]
     return render_template("search_movie_titles.html")
 
 
@@ -82,14 +82,21 @@ def select_movie():
 
 @app.route("/select_vibe/<movie_id>", methods=["GET", "POST"])
 def select_vibe(movie_id):
-    search_manager.movie_id_to_add = movie_id
-    return render_template_modal("vibe_selector.html")
+    movie_check = Movie.query.filter_by(tmdb_id=movie_id).first()
+    if movie_check:
+        watchlist = MovieList.query.filter_by(id=db_manager.current_watchlist.id).first()
+        watchlist.movies.append(movie_check)
+        db.session.commit()
+        return redirect(url_for("home"))
+    else:
+        search_manager.movie_id_to_add = movie_id
+        return render_template_modal("vibe_selector.html")
 
 
 # Adds the movie details to the database sent from select and the vibe-selector form
 @app.route("/add-movie", methods=["POST"])
 def add_movie():
-    search_manager.search_tmdb_details(search_manager.movie_id_to_add)
+    search_manager.search_tmdb_details(tmdb_id =search_manager.movie_id_to_add)
 
     # Add the movie to the database
     new_movie = Movie(

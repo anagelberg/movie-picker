@@ -164,8 +164,8 @@
                     {{ movie.description }}
                 </p>
 
-                <a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Update</a>
-                <a href="{{ url_for('delete', movie_id=movie.id) }}" class="button delete-button">Delete</a>
+                <a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Edit</a>
+                <a href="{{ url_for('delete_movie', movie_id=movie.id) }}" class="button delete-button">Delete</a>
 
             </div>
         </div>
