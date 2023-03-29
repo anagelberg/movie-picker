@@ -34,6 +34,7 @@ class DbManager:
         self.filtered_movies.sort(key=lambda x: x.pop_rating, reverse=True)  # sort descending
 
 
+
 class SearchManager:
     def __init__(self):
         self.show_titles = None

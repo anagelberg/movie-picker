@@ -28,6 +28,21 @@ for (i = 0; i < coll.length; i++) {
 });
 </script>
 
+<script>
+    //triggered when modal is about to be shown (populate values for delete movie)
+$('#confirm-media-delete').on('show.bs.modal', function(e) {
+
+    //get data-id attribute of the clicked element
+    var movie_name = $(e.relatedTarget).data('movie_name');
+    var watchlist_name = $(e.relatedTarget).data('watchlist_name');
+
+    //populate the textbox
+    $(e.currentTarget).find('input[name="movie_name"]').val(movie_name);
+    $(e.currentTarget).find('input[name="watchlist_name"]').val(watchlist_name);
+});
+</script>
+
+
 {% endblock %}
 
 
@@ -59,7 +74,7 @@ for (i = 0; i < coll.length; i++) {
         <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
             <div>
                 <div class="title">{{ movie.title }} <br></div>
-                <div class="rating">
+                <div class="rating_display">
                     <label>{{ movie.pop_rating }}</label>
                     <i class="fas fa-star star"></i>
                 </div>
@@ -71,7 +86,12 @@ for (i = 0; i < coll.length; i++) {
                 </p>
 
                 <a href="{{ url_for('show_edit_page', movie_id=movie.id) }}" class="button">Edit</a>
-                <a href="{{ url_for('delete_movie', watchlist_id=movie_list.id , movie_id=movie.id) }}" class="button delete-button">Delete</a>
+                <!--<a href="{{ url_for('delete_movie', watchlist_id=movie_list.id , movie_id=movie.id) }}" class="button delete-button">Delete</a> -->
+                <a data-toggle="modal" data-target="#confirm-media-delete" data-movie_name="{{ movie.title }}"
+                   data-watchlist_name="{{ movie_list.name }}" class="button delete-button">Delete</a>
+
+
+
 
             </div>
         </div>
@@ -125,6 +145,83 @@ for (i = 0; i < coll.length; i++) {
         </div>
     </div>
 </div>
+
+
+<!--Delete media modal -->
+<div class="modal fade" id="confirm-media-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Confirm Delete
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('delete_movie')}}" method="post">
+                    <div class="form-group">
+                        <label for="movie_name">Delete</label>
+                        <input class="readonly_input" type="text" id="movie_name" name="movie_name" readonly="readonly">
+
+                        <label for="watchlist_name">from</label>
+                        <input class=readonly_input" type="text" id="watchlist_name" name="watchlist_name" readonly="readonly">
+                        <label for="watchlist_name">?</label>
+                        </div>
+
+                    <!-- Watched? -->
+
+                     <div class="form-check form-group">
+                            <input type="checkbox" name="watched_check" value="True" checked
+                                   id="watched_check">
+                            <label class="form-check-label" for="watched_check">I watched this.</label>
+                        </div>
+
+                    <!-- star rating -->
+                    <div>
+                    <label>Add a rating: </label>
+                    </div>
+                    <div class="rating form-group">
+                        <label>
+                            <input type="radio" name="stars" value="1"/>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="2"/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="3"/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="4"/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="5"/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                    </div>
+
+                    <div>
+                    <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
 

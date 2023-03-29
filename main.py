@@ -1,20 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, request
-#import requests
-from app import db, Movie, MovieList, app#, modal
+from flask import render_template, redirect, url_for, request
+from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
-#from flask_modals import render_template_modal
 
 
 # NECESSARY
-# TODO: !Add "watched" feature / own list
-# TODO: !Edit page for movie/manual entry button OR TV show entry
 # TODO: (begin_) Make PRETTY
 
 # Nice-to-haves
-# TODO: trycatch errors: double click
-# TODO: Try TV show search
 # TODO: talk to letterboxd
-
 
 # When ready to publish: FRIDAY
 # TODO: Requirements file
@@ -129,11 +122,26 @@ def add_movie():
 
 
 # Deletes a movie
-@app.route("/delete_movie/<watchlist_id>/<movie_id>")
-def delete_movie(watchlist_id, movie_id):
-    movie_to_delete = Movie.query.filter_by(id=movie_id).first()
-    from_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
+@app.route("/delete_movie/", methods=["POST"])
+def delete_movie():
+    movie_to_delete = Movie.query.filter_by(title=request.form["movie_name"]).first()
+    if request.form.getlist('stars'):
+        movie_to_delete.my_rating = request.form.getlist('stars')[0]
+
+    from_watchlist = MovieList.query.filter_by(name=request.form["watchlist_name"]).first()
     from_watchlist.movies.remove(movie_to_delete)
+
+    if request.form.getlist('watched_check'):
+        movie_to_delete.watched = "True"
+        watched_list = MovieList.query.filter_by(name="Watched Movies").first()
+        if not watched_list:
+            watched_list = MovieList(
+                name="Watched Movies",
+                description="These are the movies you've seen."
+            )
+            db.session.add(watched_list)
+        movie_to_delete.movie_list.append(watched_list)
+
     db.session.commit()
     return redirect(url_for('home'))
 
