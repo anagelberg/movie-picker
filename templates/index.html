@@ -7,49 +7,14 @@
 {% endblock %}
 
 {% block scripts %}
-<script> var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.maxHeight){
-      content.style.maxHeight = null;
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-    }
-  });
-}</script>
-
-<script>
-    $('#confirm-delete').on('show.bs.modal', function(e) {
-    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-});
-</script>
-
-<script>
-    //triggered when modal is about to be shown (populate values for delete movie)
-$('#confirm-media-delete').on('show.bs.modal', function(e) {
-
-    //get data-id attribute of the clicked element
-    var movie_name = $(e.relatedTarget).data('movie_name');
-    var watchlist_name = $(e.relatedTarget).data('watchlist_name');
-
-    //populate the textbox
-    $(e.currentTarget).find('input[name="movie_name"]').val(movie_name);
-    $(e.currentTarget).find('input[name="watchlist_name"]').val(watchlist_name);
-});
-</script>
-
-
+    <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 {% endblock %}
 
 
 {% block title %} My Watchlist {% endblock %}
 
 {% block content %}
-<a href="{{ url_for('test') }}" class="button">TEST</a>
 
 <div class="container-fluid">
 
@@ -58,7 +23,7 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
 
     <!-- Movie lists -->
     {% for movie_list in watchlists %}
-<button type="button" class="collapsible" style="margin : 1px; fontsize: 14px;">{{movie_list.name}}</button>
+<button type="button" class="collapsible" style="margin : 1px; fontsize: 14px;" >{{movie_list.name}}</button>
 <div class="content">
 
 
@@ -74,10 +39,19 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
         <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
             <div>
                 <div class="title">{{ movie.title }} <br></div>
-                <div class="rating_display">
-                    <label>{{ movie.pop_rating }}</label>
+
+                {% if movie.my_rating %}
+                        <div class="rating_display">
+                            <label>Your Rating: {{ movie.my_rating }} / 5</label>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                {% else %}
+                    <div class="rating_display">
+                    <label>{{ movie.pop_rating }} / 5</label>
                     <i class="fas fa-star star"></i>
                 </div>
+                 {% endif %}
+
                 <p class="genre">{{ movie.genre }}</p>
                 <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
                 <p class="run_time">{{ movie.run_time }} minutes</p>
@@ -85,13 +59,12 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
                     {{ movie.description }}
                 </p>
 
-                <a href="{{ url_for('show_edit_page', movie_id=movie.id) }}" class="button">Edit</a>
-                <!--<a href="{{ url_for('delete_movie', watchlist_id=movie_list.id , movie_id=movie.id) }}" class="button delete-button">Delete</a> -->
+
+                <a data-toggle="modal" data-target="#update-media-info" data-mp_name="{{ movie.title }}"
+                   class="button">Edit</a>
+
                 <a data-toggle="modal" data-target="#confirm-media-delete" data-movie_name="{{ movie.title }}"
                    data-watchlist_name="{{ movie_list.name }}" class="button delete-button">Delete</a>
-
-
-
 
             </div>
         </div>
@@ -147,7 +120,7 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
 </div>
 
 
-<!--Delete media modal -->
+<!--Delete media (movie) modal -->
 <div class="modal fade" id="confirm-media-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -163,56 +136,64 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
                         <label for="watchlist_name">from</label>
                         <input class=readonly_input" type="text" id="watchlist_name" name="watchlist_name" readonly="readonly">
                         <label for="watchlist_name">?</label>
-                        </div>
+                    </div>
 
                     <!-- Watched? -->
 
                      <div class="form-check form-group">
                             <input type="checkbox" name="watched_check" value="True" checked
                                    id="watched_check">
-                            <label class="form-check-label" for="watched_check">I watched this.</label>
-                        </div>
+                            <label class="form-check-label" for="watched_check">I've watched this previously.</label>
+                     </div>
 
                     <!-- star rating -->
                     <div>
-                    <label>Add a rating: </label>
-                    </div>
-                    <div class="rating form-group">
-                        <label>
-                            <input type="radio" name="stars" value="1"/>
-                            <span class="icon">★</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="stars" value="2"/>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="stars" value="3"/>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="stars" value="4"/>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="stars" value="5"/>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                            <span class="icon">★</span>
-                        </label>
+                        <label>Add a rating: </label>
                     </div>
 
+                    {% include "star_form_template.html" %}
+
                     <div>
-                    <button type="submit" class="btn btn-primary">Delete</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Update info modal -->
+<div id="update-media-info" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Motion Picture</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id=update_form action="{{ url_for('edit_mp') }}" method="post">
+                    <div class="form-group">
+                        <label for="mp_name">Movie to update: </label>
+                        <input class="readonly_input form-control" type="text" id="mp_name" name="mp_name" readonly>
+                    </div>
+
+                    <p>Choose the emotional and mental vibe of this movie.</p>
+                    {% include "vibe_selector_template.html" %}
+
+                    <div class="form-check form-group">
+                            <input type="checkbox" name="watched_check" value="True" checked
+                                   id="watched_update_check">
+                            <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
+                     </div>
+
+
+                    <p>(Optional field) Add a custom rating:  </p>
+                    {% include "star_form_template.html" %}
+                    <button type="submit" id="update_mp_submit" class="btn btn-primary"
+                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
+                        Save</button>
                 </form>
             </div>
         </div>
@@ -222,12 +203,5 @@ $('#confirm-media-delete').on('show.bs.modal', function(e) {
 
 
 
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', filename='js/vibe_selector.js')}}"></script>
 
 {% endblock %}

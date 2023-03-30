@@ -2,21 +2,8 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
-from sqlalchemy.orm import relationship
-#from flask_modals import Modal
-#from __future__ import annotations
-
-from sqlalchemy import Column
-from sqlalchemy import Table
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
-#modal = Modal(app)
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # Create in app

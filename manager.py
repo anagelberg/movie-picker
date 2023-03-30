@@ -33,6 +33,21 @@ class DbManager:
                 self.filtered_movies.append(movie)
         self.filtered_movies.sort(key=lambda x: x.pop_rating, reverse=True)  # sort descending
 
+    def add_to_watched_movies(self, movie):
+        from app import Movie, MovieList, db
+        watched_list = MovieList.query.filter_by(name="Watched Movies").first()
+        movie.watched = "True"
+        if not watched_list:
+            watched_list = MovieList(
+                name="Watched Movies",
+                description="These are the movies you've seen."
+            )
+            db.session.add(watched_list)
+            watched_movies = Movie.query.filter(Movie.watched == "True").all()
+            for movie in watched_movies:
+                watched_list.movies.append(movie)
+        movie.movie_list.append(watched_list)
+        db.session.commit()
 
 
 class SearchManager:

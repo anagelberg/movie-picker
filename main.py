@@ -2,7 +2,6 @@ from flask import render_template, redirect, url_for, request
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
 
-
 # NECESSARY
 # TODO: (begin_) Make PRETTY
 
@@ -12,11 +11,11 @@ from manager import DbManager, SearchManager
 # When ready to publish: FRIDAY
 # TODO: Requirements file
 # TODO: Make comments on code
-# TODO: Make instructional README
+# TODO: Make instructional README / best practice for launch
 # TODO: Download on Jesse's computer
 # TODO: Add to Portfolio :)
 
-#db.drop_all()
+# db.drop_all()
 db.create_all()
 
 db_manager = DbManager()
@@ -26,6 +25,8 @@ search_manager = SearchManager()
 @app.route("/")
 def home():
     all_lists = MovieList.query.all()
+    if MovieList.query.filter_by(name="Watched Movies").first():
+        all_lists.append(all_lists.pop(all_lists.index(MovieList.query.filter_by(name="Watched Movies").first())))
     return render_template("index.html", watchlists=all_lists)
 
 
@@ -34,7 +35,7 @@ def add_list():
     new_list = MovieList(
         name=request.form["watchlist_name"],
         description=request.form["watchlist_description"]
-        )
+    )
     db.session.add(new_list)
     db.session.commit()
     return redirect(url_for('home'))
@@ -44,16 +45,23 @@ def add_list():
 def create_list():
     return render_template("add_new_movie_jar.html")
 
+
 @app.route("/show-edit-page/<movie_id>")
 def show_edit_page(movie_id):
     db_manager.movie_to_update = Movie.query.filter_by(id=movie_id).first()
     return render_template("edit.html", movie=db_manager.movie_to_update)
 
+
 # TODO: change to update all data
-@app.route("/edit/", methods=["POST"])
-def edit():
-    movie_to_update = Movie.query.filter_by(id=db_manager.movie_to_update.id).first()
-    movie_to_update.title = request.form["title"]
+@app.route("/edit_mp/", methods=["POST"])
+def edit_mp():
+    movie_to_update = Movie.query.filter_by(title=request.form["mp_name"]).first()
+    movie_to_update.emotional_vibe = request.form["emotional_vibe"]
+    movie_to_update.mental_vibe = request.form["mental_vibe"]
+    if request.form.getlist('stars'):
+        movie_to_update.my_rating = request.form.getlist('stars')[0]
+    if request.form.getlist('watched_check'):
+        db_manager.add_to_watched_movies(movie_to_update)
     db.session.commit()
     return redirect(url_for('home'))
 
@@ -100,7 +108,7 @@ def add_movie():
         my_rating=None,
         img_url=f"https://image.tmdb.org/t/p/original{search_manager.media_data['poster_url']}",
         run_time=search_manager.media_data["runtime"],
-        pop_rating=search_manager.media_data["vote_average"],
+        pop_rating=round(search_manager.media_data["vote_average"] / 2, 1),
         imdb_id=search_manager.media_data["imdb_id"],
         watched="False",
         genre=search_manager.media_data["genre_string"],
@@ -116,9 +124,9 @@ def add_movie():
 
     db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
     search_manager.added()
-    return render_template("select.html",   movies=search_manager.movie_titles,
-                                            shows=search_manager.show_titles,
-                                            movie_id_list=db_manager.current_id_list)
+    return render_template("select.html", movies=search_manager.movie_titles,
+                           shows=search_manager.show_titles,
+                           movie_id_list=db_manager.current_id_list)
 
 
 # Deletes a movie
@@ -132,18 +140,12 @@ def delete_movie():
     from_watchlist.movies.remove(movie_to_delete)
 
     if request.form.getlist('watched_check'):
-        movie_to_delete.watched = "True"
-        watched_list = MovieList.query.filter_by(name="Watched Movies").first()
-        if not watched_list:
-            watched_list = MovieList(
-                name="Watched Movies",
-                description="These are the movies you've seen."
-            )
-            db.session.add(watched_list)
-        movie_to_delete.movie_list.append(watched_list)
+        db_manager.add_to_watched_movies(movie_to_delete)
+
 
     db.session.commit()
     return redirect(url_for('home'))
+
 
 # Deletes a movie
 @app.route("/delete_movie_list/<watchlist_id>")
@@ -152,7 +154,6 @@ def delete_movie_list(watchlist_id):
     db.session.delete(watchlist_to_delete)
     db.session.commit()
     return redirect(url_for('home'))
-
 
 
 @app.route("/movie_jar", methods=["GET", "POST"])
