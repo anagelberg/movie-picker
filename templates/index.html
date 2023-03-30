@@ -1,108 +1,96 @@
 {% extends 'bootstrap/base.html' %}
 {% include "header.html" %}
 
-{% block styles %}
-  {{ super() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
-{% endblock %}
-
-{% block scripts %}
-    <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
-{% endblock %}
-
-
-{% block title %} My Watchlist {% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
-
-  <h1 class="heading">My Movie Jars</h1>
-
+    <h1 class="heading">My Movie Jars</h1>
 
     <!-- Movie lists -->
     {% for movie_list in watchlists %}
-<button type="button" class="collapsible" style="margin : 1px; fontsize: 14px;" >{{movie_list.name}}</button>
-<div class="content">
+    <button type="button" class="collapsible" style="margin : 1px; fontsize: 14px;">{{movie_list.name}}</button>
+    <div class="content">
+
+        <!-- display movie area -->
+        <div class="container-fluid" style="margin: 2rem;">
+            <div class="row justify-content-center">
+                {% for movie in movie_list.movies %}
+                <!-- one card -->
+                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+                    <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
+                    </div>
+                    <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
+                        <div>
+                            <div class="title">{{ movie.title }} <br></div>
+
+                            {% if movie.my_rating %}
+                            <div class="rating_display">
+                                <label>Your Rating: {{ movie.my_rating }} / 5</label>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            {% else %}
+                            <div class="rating_display">
+                                <label>{{ movie.pop_rating }} / 5</label>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            {% endif %}
+
+                            <p class="genre">{{ movie.genre }}</p>
+                            <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }}
+                                mentally </p>
+                            <p class="run_time">{{ movie.run_time }} minutes</p>
+                            <p class="overview">
+                                {{ movie.description }}
+                            </p>
 
 
+                            <a data-toggle="modal" data-target="#update-media-info" data-mp_name="{{ movie.title }}"
+                               class="button">Edit</a>
 
- <!-- display movie area -->
-    <div class="container-fluid" style="margin: 2rem;">
-        <div class="row justify-content-center">
-    {% for movie in movie_list.movies %}
-    <!-- one card -->
-    <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
-        <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
-        </div>
-        <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
-            <div>
-                <div class="title">{{ movie.title }} <br></div>
+                            <a data-toggle="modal" data-target="#confirm-media-delete"
+                               data-movie_name="{{ movie.title }}"
+                               data-watchlist_name="{{ movie_list.name }}" class="button delete-button">Delete</a>
 
-                {% if movie.my_rating %}
-                        <div class="rating_display">
-                            <label>Your Rating: {{ movie.my_rating }} / 5</label>
-                            <i class="fas fa-star star"></i>
                         </div>
-                {% else %}
-                    <div class="rating_display">
-                    <label>{{ movie.pop_rating }} / 5</label>
-                    <i class="fas fa-star star"></i>
+                    </div>
                 </div>
-                 {% endif %}
+                <!-- end card -->
+                {% endfor %}
 
-                <p class="genre">{{ movie.genre }}</p>
-                <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
-                <p class="run_time">{{ movie.run_time }} minutes</p>
-                <p class="overview">
-                    {{ movie.description }}
-                </p>
-
-
-                <a data-toggle="modal" data-target="#update-media-info" data-mp_name="{{ movie.title }}"
-                   class="button">Edit</a>
-
-                <a data-toggle="modal" data-target="#confirm-media-delete" data-movie_name="{{ movie.title }}"
-                   data-watchlist_name="{{ movie_list.name }}" class="button delete-button">Delete</a>
-
-            </div>
-        </div>
-    </div>
-    <!-- end card -->
-    {% endfor %}
-
-    <!-- Add movie card -->
-            <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
-                <a href="{{ url_for('search_movies', watchlist_id=movie_list.id) }}">
-                 <div class="add_movie" style="right:0px;">
-                     <h2>+ Add movie(s)</h2>
+                <!-- Add movie card -->
+                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+                    <a href="{{ url_for('search_movies', watchlist_id=movie_list.id) }}">
+                        <div class="add_movie" style="right:0px;">
+                            <h2>+ Add movie(s)</h2>
                         </div>
                     </a>
+                </div>
+                <!-- -->
             </div>
-     <!-- -->
-    </div>
         </div>
-    <!--end movie display -->
+        <!--end movie display -->
 
 
-<a href="#" class="button delete-button" data-href="{{ url_for('delete_movie_list', watchlist_id=movie_list.id) }}"
-   data-toggle="modal" data-target="#confirm-delete"><i class="fa-solid fa-trash-can"></i> Delete Movie Jar</a>
+        <a href="#" class="button delete-button"
+           data-href="{{ url_for('delete_movie_list', watchlist_id=movie_list.id) }}"
+           data-toggle="modal" data-target="#confirm-delete"><i class="fa-solid fa-trash-can"></i> Delete Movie Jar</a>
 
-</div>
+    </div>
 
     {%endfor %}
 
     <!-- Create a new jar button-->
-         <button class="collapsible" type="submit" style="margin : 1px; fontsize: 14px;" data-toggle="modal"
-                 data-target="#add-movie-jar" >+ Create new movie jar
-         </button>
+    <button class="collapsible" type="submit" style="margin : 1px; fontsize: 14px;" data-toggle="modal"
+            data-target="#add-movie-jar">+ Create new movie jar
+    </button>
 
 </div>
 
 
 <!-- Delete movie jar modal -->
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -139,17 +127,18 @@
                     {% include "vibe_selector_template.html" %}
 
                     <div class="form-check form-group">
-                            <input type="checkbox" name="watched_check" value="True" checked
-                                   id="watched_update_check">
-                            <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
-                     </div>
+                        <input type="checkbox" name="watched_check" value="True" checked
+                               id="watched_update_check">
+                        <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
+                    </div>
 
 
-                    <p>(Optional field) Add a custom rating:  </p>
+                    <p>(Optional field) Add a custom rating: </p>
                     {% include "star_form_template.html" %}
                     <button type="submit" id="update_mp_submit" class="btn btn-primary"
                             onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
-                        Save</button>
+                        Save
+                    </button>
                 </form>
             </div>
         </div>
@@ -157,7 +146,8 @@
 </div>
 
 <!--Delete media (movie) modal -->
-<div class="modal fade" id="confirm-media-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirm-media-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -170,17 +160,18 @@
                         <input class="readonly_input" type="text" id="movie_name" name="movie_name" readonly="readonly">
 
                         <label for="watchlist_name">from</label>
-                        <input class=readonly_input" type="text" id="watchlist_name" name="watchlist_name" readonly="readonly">
+                        <input class=readonly_input" type="text" id="watchlist_name" name="watchlist_name"
+                               readonly="readonly">
                         <label for="watchlist_name">?</label>
                     </div>
 
                     <!-- Watched? -->
 
-                     <div class="form-check form-group">
-                            <input type="checkbox" name="watched_check" value="True" checked
-                                   id="watched_check">
-                            <label class="form-check-label" for="watched_check">I've watched this previously.</label>
-                     </div>
+                    <div class="form-check form-group">
+                        <input type="checkbox" name="watched_check" value="True" checked
+                               id="watched_check">
+                        <label class="form-check-label" for="watched_check">I've watched this previously.</label>
+                    </div>
 
                     <!-- star rating -->
                     <div>
@@ -199,7 +190,6 @@
 </div>
 
 
-
 <!-- Add a movie jar modal -->
 <div id="add-movie-jar" class="modal fade">
     <div class="modal-dialog">
@@ -212,19 +202,19 @@
                 <form action="{{ url_for('add_list') }}" method="post">
                     <div class="form-group">
                         <label for="watchlist_name">Name for watchlist</label>
-                        <input type="text" class="form-control" name="watchlist_name" id="watchlist_name_entry" placeholder="Enter Name" required>
+                        <input type="text" class="form-control" name="watchlist_name" id="watchlist_name_entry"
+                               placeholder="Enter Name" required>
                     </div>
-                      <div class="form-group">
-                            <label for="watchlist_description">Movie Jar Description</label>
-                            <textarea class="form-control" name="watchlist_description" id="watchlist_description" rows="3"></textarea>
-                        </div>
+                    <div class="form-group">
+                        <label for="watchlist_description">Movie Jar Description</label>
+                        <textarea class="form-control" name="watchlist_description" id="watchlist_description"
+                                  rows="3"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-
 
 {% endblock %}
