@@ -74,9 +74,9 @@
 
     <!-- Add movie card -->
             <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
-                <a href="{{ url_for('show_search_screen', watchlist_id=movie_list.id) }}">
+                <a href="{{ url_for('search_movies', watchlist_id=movie_list.id) }}">
                  <div class="add_movie" style="right:0px;">
-                     <h2>+ Add movie</h2>
+                     <h2>+ Add movie(s)</h2>
                         </div>
                     </a>
             </div>
@@ -93,15 +93,15 @@
 
     {%endfor %}
 
-    <!-- Create a new jar button -->
-    <form action="{{url_for('create_list')}}">
-         <button class="collapsible" type="submit" style="margin : 1px; fontsize: 14px;">+ Create new movie jar</button>
-      </form>
+    <!-- Create a new jar button-->
+         <button class="collapsible" type="submit" style="margin : 1px; fontsize: 14px;" data-toggle="modal"
+                 data-target="#add-movie-jar" >+ Create new movie jar
+         </button>
 
 </div>
 
 
-<!-- Confirm delete modal for watchlist -->
+<!-- Delete movie jar modal -->
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -119,6 +119,42 @@
     </div>
 </div>
 
+
+<!-- Update motion picture info modal -->
+<div id="update-media-info" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Motion Picture</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id=update_form action="{{ url_for('edit_mp') }}" method="post">
+                    <div class="form-group">
+                        <label for="mp_name">Movie to update: </label>
+                        <input class="readonly_input form-control" type="text" id="mp_name" name="mp_name" readonly>
+                    </div>
+
+                    <p>Choose the emotional and mental vibe of this movie.</p>
+                    {% include "vibe_selector_template.html" %}
+
+                    <div class="form-check form-group">
+                            <input type="checkbox" name="watched_check" value="True" checked
+                                   id="watched_update_check">
+                            <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
+                     </div>
+
+
+                    <p>(Optional field) Add a custom rating:  </p>
+                    {% include "star_form_template.html" %}
+                    <button type="submit" id="update_mp_submit" class="btn btn-primary"
+                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
+                        Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!--Delete media (movie) modal -->
 <div class="modal fade" id="confirm-media-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -164,43 +200,30 @@
 
 
 
-<!-- Update info modal -->
-<div id="update-media-info" class="modal fade">
+<!-- Add a movie jar modal -->
+<div id="add-movie-jar" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Update Motion Picture</h5>
+                <h5 class="modal-title">Create a New Movie Jar</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id=update_form action="{{ url_for('edit_mp') }}" method="post">
+                <form action="{{ url_for('add_list') }}" method="post">
                     <div class="form-group">
-                        <label for="mp_name">Movie to update: </label>
-                        <input class="readonly_input form-control" type="text" id="mp_name" name="mp_name" readonly>
+                        <label for="watchlist_name">Name for watchlist</label>
+                        <input type="text" class="form-control" name="watchlist_name" id="watchlist_name_entry" placeholder="Enter Name" required>
                     </div>
-
-                    <p>Choose the emotional and mental vibe of this movie.</p>
-                    {% include "vibe_selector_template.html" %}
-
-                    <div class="form-check form-group">
-                            <input type="checkbox" name="watched_check" value="True" checked
-                                   id="watched_update_check">
-                            <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
-                     </div>
-
-
-                    <p>(Optional field) Add a custom rating:  </p>
-                    {% include "star_form_template.html" %}
-                    <button type="submit" id="update_mp_submit" class="btn btn-primary"
-                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
-                        Save</button>
+                      <div class="form-group">
+                            <label for="watchlist_description">Movie Jar Description</label>
+                            <textarea class="form-control" name="watchlist_description" id="watchlist_description" rows="3"></textarea>
+                        </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-
 
 
 

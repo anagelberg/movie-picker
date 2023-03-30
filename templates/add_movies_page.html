@@ -1,0 +1,109 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% include "header.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
+{% endblock %}
+
+
+{% block title %}Select Movie{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+  <h1> Add movies to "{{ watchlist.name }}" </h1>
+
+  <!-- Search Form -->
+  <form action="{{ url_for('search_movies', watchlist_id = watchlist.id) }}" method="post">
+                    <div class="form-group">
+                        <label for="search_entry">Title of movie</label>
+                        <input type="text" class="form-control" name="search_entry" id="search_entry" placeholder="Enter Title" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+
+  {% if movies or shows %}
+    <h1 class="heading">Select motion picture(s) to add to "{{watchlist.name}}"</h1>
+  {% endif %}
+
+    {% if movies %}
+    <h2>Movies</h2>
+    {% for movie in movies %}
+    <p>
+        {% if movie["id"] in movie_id_list %}
+        <a href="" class="btn disabled btn-secondary">✓</a>
+        {% elif movie["id"] in all_ids %}
+        <a href="{{ url_for('add_existing_mp', mp_id=movie['id'])}}" class="btn btn-primary">+</a>
+        {% else %}
+        <a data-toggle="modal" data-target="#vibe_selector_modal" data-mp_id="{{ movie['id'] }}" data-show_movie="movie"
+           class="btn btn-primary">+</a>
+        {% endif %}
+        {{ movie["title"] }} - {{ movie["release_date"] }}
+    </p>
+    {% endfor %}
+    {% endif %}
+
+    {% if shows %}
+  <h2>TV shows</h2>
+  {% for show in shows %}
+  <p>
+    {% if show["id"] in movie_id_list %}
+        <a href="" class="btn disabled btn-secondary">✓</a>
+        {% elif show["id"] in all_ids %}
+        <a href="{{ url_for('add_existing_mp', mp_id=show['id']) }}" class="btn btn-primary">+</a>
+        {% else %}
+        <a data-toggle="modal" data-target="#vibe_selector_modal" data-mp_id="{{ show['id'] }}" data-show_movie="show"
+           class="btn btn-primary">+</a>
+        {% endif %}
+        {{ show["name"] }} - {{ show["first_air_date"] }}
+  </p>
+  {% endfor %}
+{% endif %}
+
+</div>
+
+
+<!-- Vibe Selector Modal -->
+<div id="vibe_selector_modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select vibe</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <form id=vibe_form action="{{ url_for('add_mp') }}" method="post">
+                    <!-- invisible to user -->
+                    <div class="row">
+                        <div class="col"><input class="readonly_input form-control invisible" type="text" id="mp_id" name="mp_id" readonly></div>
+                        <div class="col"><input class="readonly_input form-control invisible" type="text" id="show_movie" name="show_movie" readonly></div>
+                    </div>
+                    <!-- -->
+
+                    <p>Choose the emotional and mental vibe of this movie.</p>
+                    {% include "vibe_selector_template.html" %}
+                    <button type="submit" id="save_movie_submit" class="btn btn-primary"
+                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
+                        Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+{% include "footer.html" %}

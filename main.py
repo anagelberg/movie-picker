@@ -41,17 +41,6 @@ def add_list():
     return redirect(url_for('home'))
 
 
-@app.route("/create-list")
-def create_list():
-    return render_template("add_new_movie_jar.html")
-
-
-@app.route("/show-edit-page/<movie_id>")
-def show_edit_page(movie_id):
-    db_manager.movie_to_update = Movie.query.filter_by(id=movie_id).first()
-    return render_template("edit.html", movie=db_manager.movie_to_update)
-
-
 # TODO: change to update all data
 @app.route("/edit_mp/", methods=["POST"])
 def edit_mp():
@@ -66,40 +55,41 @@ def edit_mp():
     return redirect(url_for('home'))
 
 
-@app.route("/show_search_screen/<watchlist_id>")
-def show_search_screen(watchlist_id):
+@app.route("/search_movies/<watchlist_id>", methods=["GET", "POST"])
+def search_movies(watchlist_id):
     db_manager.current_watchlist = MovieList.query.filter_by(id=watchlist_id).first()
     db_manager.current_id_list = [int(movie.tmdb_id) for movie in db_manager.current_watchlist.movies]
-    return render_template("search_movie_titles.html")
+    db_manager.all_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+    if request.method == "POST":
+        search_manager.search_tmdb_titles(title=request.form["search_entry"])
+        return render_template("add_movies_page.html",
+                               movies=search_manager.movie_titles,
+                               shows=search_manager.show_titles,
+                               movie_id_list=db_manager.current_id_list,
+                               all_ids=db_manager.all_id_list,
+                               watchlist=db_manager.current_watchlist)
+    return render_template("add_movies_page.html", watchlist=db_manager.current_watchlist)
 
 
-@app.route("/select-movie", methods=["POST"])
-def select_movie():
-    search_manager.search_tmdb_titles(title=request.form["search_entry"])
-    return render_template("select.html", movies=search_manager.movie_titles,
+@app.route("/add_existing_mp/<mp_id>")
+def add_existing_mp(mp_id):
+    mp = Movie.query.filter_by(tmdb_id=mp_id).first()
+    watchlist = MovieList.query.filter_by(id=db_manager.current_watchlist.id).first()
+    watchlist.movies.append(mp)
+    db.session.commit()
+    db_manager.current_id_list = [int(movie.tmdb_id) for movie in watchlist.movies]
+    return render_template("add_movies_page.html",
+                           movies=search_manager.movie_titles,
                            shows=search_manager.show_titles,
-                           movie_id_list=db_manager.current_id_list)
-
-
-@app.route("/select_vibe/<movie_id>/<tv_or_movie>", methods=["GET", "POST"])
-def select_vibe(movie_id, tv_or_movie):
-    movie_check = Movie.query.filter_by(tmdb_id=movie_id).first()
-    search_manager.show_or_movie = tv_or_movie
-    if movie_check:
-        watchlist = MovieList.query.filter_by(id=db_manager.current_watchlist.id).first()
-        watchlist.movies.append(movie_check)
-        db.session.commit()
-        return redirect(url_for("home"))
-    else:
-        search_manager.movie_id_to_add = movie_id
-        return render_template("vibe_selector.html")
+                           movie_id_list=db_manager.current_id_list,
+                           all_ids=db_manager.all_id_list,
+                           watchlist=db_manager.current_watchlist)
 
 
 # Adds the movie details to the database sent from select and the vibe-selector form
 @app.route("/add-movie", methods=["POST"])
-def add_movie():
-    search_manager.search_tmdb_details(tmdb_id=search_manager.movie_id_to_add, media=search_manager.show_or_movie)
-
+def add_mp():
+    search_manager.search_tmdb_details(tmdb_id=request.form["mp_id"], media=request.form["show_movie"])
     # Add the movie to the database
     new_movie = Movie(
         title=search_manager.media_data["title"],
@@ -122,11 +112,16 @@ def add_movie():
     db.session.add(new_movie)
     db.session.commit()
 
-    db_manager.current_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+    db_manager.current_id_list = [int(movie.tmdb_id) for movie in db_manager.current_watchlist.movies]
+    db.all_id_list = [int(movie.tmdb_id) for movie in Movie.query.all()]
+
     search_manager.added()
-    return render_template("select.html", movies=search_manager.movie_titles,
+    return render_template("add_movies_page.html",
+                           movies=search_manager.movie_titles,
                            shows=search_manager.show_titles,
-                           movie_id_list=db_manager.current_id_list)
+                           movie_id_list=db_manager.current_id_list,
+                           all_ids=db_manager.all_id_list,
+                           watchlist=db_manager.current_watchlist)
 
 
 # Deletes a movie
@@ -141,7 +136,6 @@ def delete_movie():
 
     if request.form.getlist('watched_check'):
         db_manager.add_to_watched_movies(movie_to_delete)
-
 
     db.session.commit()
     return redirect(url_for('home'))
@@ -163,16 +157,11 @@ def movie_jar():
     db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
     if request.method == "POST":
         db_manager.filter_movies(request.form)
-        return render_template("movie_jar.html",
+        return render_template("movie_picker.html",
                                movies=db_manager.filtered_movies)
-    return render_template("movie_jar.html",
+    return render_template("movie_picker.html",
                            genres=db_manager.all_genres,
                            watchlists=db_manager.all_watchlists)
-
-
-@app.route("/test", methods=["GET", "POST"])
-def test():
-    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':

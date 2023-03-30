@@ -50,4 +50,24 @@ $('#update-media-info').on('show.bs.modal', function(e) {
     $(e.currentTarget).find('input[name="mp_name"]').val(mp_name);
 });
 
+// Show Filter Modal on first page load
+$(document).ready(function(){
+		$("#filter_modal").modal('show');
+	});
+
+//  Disable vibe form after first click
+$('#vibe_form').submit(function(){
+            $(this).find(':input[type=submit]').prop('disabled', true);
+            });
+
+// Populates invisible fields on vibe selector form
+$('#vibe_selector_modal').on('show.bs.modal', function(e) {
+    var mp_id = $(e.relatedTarget).data('mp_id');
+    $(e.currentTarget).find('input[name="mp_id"]').val(mp_id);
+
+    var show_movie = $(e.relatedTarget).data('show_movie');
+    $(e.currentTarget).find('input[name="show_movie"]').val(show_movie);
+});
+
+
 

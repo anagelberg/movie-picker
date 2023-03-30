@@ -6,11 +6,12 @@ class DbManager:
     def __init__(self):
         self.filtered_movies = None
         self.current_watchlist = None
-        self.current_id_list = None
+        self.current_id_list = []
         self.movie_id_to_add = None
         self.all_genres = []
         self.all_watchlists = None
         self.movie_to_update = None
+        self.all_id_list = []
 
     def get_data(self, all_movies, all_watchlists):
         for movie in all_movies:
@@ -48,6 +49,7 @@ class DbManager:
                 watched_list.movies.append(movie)
         movie.movie_list.append(watched_list)
         db.session.commit()
+
 
 
 class SearchManager:
