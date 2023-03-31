@@ -1,30 +1,13 @@
-*, *:before, *:after {
-	 /*box-sizing: border-box;*/
-}
- html {
-	 font-size: 18px;
-	 line-height: 1.5;
-	 font-weight: 300;
-	 color: #333;
-}
- body {
-	 margin: 0;
-	 padding: 0;
-	 height: 100vh;
-	 background-color: #ecf0f9;
-	 background-attachment: fixed;
-}
-.large {
-     font-size: 3rem;
-}
+
  .content {
 	 display: flex;
-	 margin: 0 auto;
+	 margin: 0;
 	 justify-content: center;
 	 align-items: center;
 	 flex-wrap: wrap;
-	 /*max-width: 1500px;*/
 }
+
+
  p.overview {
 	 font-size: 12px;
 	 height: 100px;
@@ -35,13 +18,30 @@
  .heading {
 	 width: 100%;
 	 font-weight: 900;
-	 font-size: 1.618rem;
+	 font-size: 2rem;
 	 letter-spacing: 0.1ch;
-	 line-height: 1;
-	 padding-bottom: 0.5em;
-	 margin-bottom: 1rem;
-	 position: relative;
+	 line-height: 2;
+	 padding-bottom: 0;
+	 margin: 1rem 0 1rem auto;
 }
+
+.my-top-header {
+    background-color: #FBB13C;
+    opacity: .85;
+    padding: 20px 0 0;
+    margin: 0;
+}
+
+.big-heading {
+    font-size: 13rem;
+    color: #001F2F;
+    font-style: bold;
+    text-align: center;
+    justify-content: center;
+    margin:0;
+}
+
+
 
  .description {
 	 width: 100%;
@@ -50,7 +50,7 @@
 	 margin-bottom: 3rem;
 }
  .card {
-	 color: inherit;
+	 background-color: #939F9A;
 	 cursor: pointer;
 	 width: calc(33% - 3rem);
 	 min-width: calc(33% - 3rem);
@@ -76,10 +76,8 @@
 }
 
 
-
  .front, .back, .top-pick {
 	 display: flex;
-	 /*border-radius: 0px;*/
 	 background-position: center;
 	 background-size: cover;
 	 text-align: center;
@@ -98,7 +96,6 @@
 	 padding: 0rem;
 	 font-size: 1.618rem;
 	 font-weight: 600;
-	 color: #fff;
 	 overflow: hidden;
 }
  .front:before {
@@ -109,7 +106,7 @@
 	 left: 0;
 	 right: 0;
 	 bottom: 0;
-	 background: linear-gradient(135deg, #1a9be6, #1a57e6);
+	 background-color: #939F9A;
 	 opacity: 0.25;
 	 z-index: -1;
 }
@@ -154,66 +151,15 @@
  .card:nth-child(even):hover .back {
 	 transform: rotateY(0deg);
 }
- .button {
-	 transform: translateZ(40px);
-	 cursor: pointer;
-	 -webkit-backface-visibility: hidden;
-	 backface-visibility: hidden;
-	 font-weight: bold;
-	 color: #fff;
-	 padding: 0.5em 1em;
-	 border-radius: 100px;
-	 font: inherit;
-	 background: linear-gradient(135deg, #1a9be6, #1a57e6);
-	 border: none;
-	 position: relative;
-	 transform-style: preserve-3d;
-	 transition: 300ms ease;
-}
- .button:before {
-	 transition: 300ms ease;
-	 position: absolute;
-	 display: block;
-	 content: '';
-	 transform: translateZ(-40px);
-	 -webkit-backface-visibility: hidden;
-	 backface-visibility: hidden;
-	 height: calc(100% - 20px);
-	 width: calc(100% - 20px);
-	 border-radius: 100px;
-	 left: 10px;
-	 top: 16px;
-	 box-shadow: 0 0 10px 10px rgba(26, 87, 230, 0.25);
-	 background-color: rgba(26, 87, 230, 0.25);
-}
 
-.button.delete-button {
-	 background-color: rgba(230, 87, 230, 0.25);
-	 background: linear-gradient(135deg, #e61a46, #e61a1a);
-}
-.button.delete-button:before {
-	 background-color: rgba(230, 87, 230, 0.25);
-	 box-shadow: 0 0 10px 10px rgba(230, 87, 230, 0.25);
-}
- .button:hover {
-	 transform: translateZ(55px);
-}
- .button:hover:before {
-	 transform: translateZ(-55px);
-}
- .button:active {
-	 transform: translateZ(20px);
-}
- .button:active:before {
-	 transform: translateZ(-20px);
-	 top: 12px;
-	 top: 12px;
-}
 
 .card-horizontal {
   display: flex;
-  flex: 1 1 auto;*/
+  flex: 1 1 auto;
 }
+
+
+
 
 .card-horizontal img {
     height:100%;
@@ -229,6 +175,43 @@
     margin-top: 40px;
     margin-bottom: 20px;
 }
+.container-fluid {
+ background-color: #DEF6CA;
+ margin: 0;
+}
+
+.icon-button {
+    color: #77867F;
+    margin: 3px;
+}
+
+.icon-button:hover {
+    color: #001F2F;
+}
+
+.card-buttons {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+
+
+
+
+
+.my_navbar {
+    background-color: #001F2F;
+    margin: 0;
+    padding: 10px;
+}
+
+nav-link {
+    font-size: 10rem;
+}
+
+
+
 .rating_display {
     color: #E4BB23;
 }
@@ -253,26 +236,26 @@
 
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
-  background-color: #eee;
-  color: #444;
+  background-color: #001F2F;
+  color: #6F6A95;
   cursor: pointer;
-  padding: 18px;
+  padding: 20px 70px;
+  margin: 10px 0;
   width: 100%;
   border: none;
   text-align: left;
   outline: none;
-  font-size: 15px;
+  font-size: 3rem;
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .active, .collapsible:hover {
-  background-color: #ccc;
+  opacity: 0.8;
 }
 
 /* Style the collapsible content. Note: hidden by default */
 .content {
-  padding: 0 18px;
-  background-color: white;
+  padding: 0;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
@@ -280,8 +263,7 @@
 
 .collapsible:after {
   content: '\02795'; /* Unicode character for "plus" sign (+) */
-  font-size: 14px;
-  color: white;
+  font-size: 3rem;
   float: right;
   margin-left: 5px;
 }

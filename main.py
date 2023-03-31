@@ -1,6 +1,8 @@
 from flask import render_template, redirect, url_for, request
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
+import subprocess
+import os
 
 # NECESSARY
 # TODO: (begin_) Make PRETTY
@@ -164,5 +166,16 @@ def movie_jar():
                            watchlists=db_manager.all_watchlists)
 
 
+
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    subprocess.run('cmd /c start chrome "http://127.0.0.1:5000"')
+    app.run(debug=True, use_reloader=False)
+
+
+
+
+
+
+

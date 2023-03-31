@@ -8,24 +8,39 @@
 
 {% block content %}
 
-<div class="container-fluid">
-    <h1 class="heading">My Movie Jars</h1>
+<div class="my-top-header">
+    <h1 class="heading big-heading">Your Movie Jars</h1>
+</div>
 
+
+<div class="container-fluid" style="background-color: #DEF6CA; margin:0; padding:0;">
     <!-- Movie lists -->
     {% for movie_list in watchlists %}
-    <button type="button" class="collapsible" style="margin : 1px; fontsize: 14px;">{{movie_list.name}}</button>
+    <button type="button" class="collapsible" style="margin : 1px 0;">{{movie_list.name}}</button>
     <div class="content">
 
         <!-- display movie area -->
-        <div class="container-fluid" style="margin: 2rem;">
+        <div class="container-fluid">
             <div class="row justify-content-center">
                 {% for movie in movie_list.movies %}
                 <!-- one card -->
-                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+
+                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1" style="background-color: #DEF6CA;">
                     <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
                     </div>
                     <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
                         <div>
+                        <div class="card-buttons">
+                        <a data-toggle="modal" data-target="#update-media-info" data-mp_name="{{ movie.title }}"
+                               ><i class="fa-solid fa-pen-to-square icon-button fa-xl"></i></a>
+
+                            <a data-toggle="modal" data-target="#confirm-media-delete"
+                               data-movie_name="{{ movie.title }}"
+                               data-watchlist_name="{{ movie_list.name }}"><i class="fa-solid fa-trash-can icon-button fa-xl"></i></a>
+</div>
+
+
+
                             <div class="title">{{ movie.title }} <br></div>
 
                             {% if movie.my_rating %}
@@ -49,12 +64,7 @@
                             </p>
 
 
-                            <a data-toggle="modal" data-target="#update-media-info" data-mp_name="{{ movie.title }}"
-                               class="button">Edit</a>
 
-                            <a data-toggle="modal" data-target="#confirm-media-delete"
-                               data-movie_name="{{ movie.title }}"
-                               data-watchlist_name="{{ movie_list.name }}" class="button delete-button">Delete</a>
 
                         </div>
                     </div>
