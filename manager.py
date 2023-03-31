@@ -12,6 +12,7 @@ class DbManager:
         self.all_watchlists = None
         self.movie_to_update = None
         self.all_id_list = []
+        self.all_runtimes = None
 
     def get_data(self, all_movies, all_watchlists):
         for movie in all_movies:
@@ -19,6 +20,7 @@ class DbManager:
                 if genre.strip() not in self.all_genres:
                     self.all_genres.append(genre.strip())
         self.all_watchlists = [li.name for li in all_watchlists]
+        self.all_runtimes = [movie.run_time for movie in all_movies]
 
     def filter_movies(self, form_data):
         from app import Movie, MovieList
@@ -92,7 +94,6 @@ class SearchManager:
         elif self.media_data['belongs_to_collection']:
             self.media_data["poster_url"] = self.media_data['belongs_to_collection']['poster_path']
         else:
-            # TODO: make a placeholder?
             self.media_data["poster_url"] = None
 
         genre_list = [genre["name"] for genre in self.media_data["genres"]]

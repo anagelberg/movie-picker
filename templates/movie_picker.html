@@ -6,76 +6,78 @@
 {% endblock %}
 
 {% block content %}
+<div class="background">
+
+
 {% if not movies %}
 <!-- Modal -->
 <div id="filter_modal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Movie options</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title">Select Filtering Options</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <p>Select options to include for a movie you'd like to watch. </p>
                 <form action="{{ url_for('movie_jar') }}" method="post">
                     <!-- Dropdown: available movie lists -->
-
                     <div class="form-group">
-                        <label for="movie_list_dropdown">Select Watchlist:</label>
-                        <select class="form-control" name="movie_list_dropdown" id="movie_list_dropdown">
+                        <legend>Select Watchlist:</legend>
+                        <select class="form-control" style="padding: 3px;" name="movie_list_dropdown" id="movie_list_dropdown">
                             {% for watchlist in watchlists %}
                             <option>{{ watchlist }}</option>
                             {%endfor%}
                         </select>
                     </div>
                     <!-- Max runtime (minutes) -->
-                    <div>
-                        <label for="max_runtime_slider">Max Runtime (mins): </label>
-                        <input type="range" name="max_runtime" value="300" min="20" max="300"
+                    <div class="form-group">
+                        <legend>Max Runtime (mins): </legend>
+                        <input class="form_accent" type="range" name="max_runtime" value="{{ave_runtime}}" min="{{min_runtime}}" max="{{max_runtime}}"
                                oninput="this.nextElementSibling.value = this.value" id="max_runtime_slider">
-                        <output>120</output>
+                        <output>{{ave_runtime}}</output>
                     </div>
                     <!-- Emotional Vibe -->
                     <div class="form-group">
-                        <label>Emotional Vibe</label>
+                        <legend>Emotional Vibe:</legend>
                         <div class="form-check">
-                            <input type="checkbox" name="emotional_vibe" value="Heavy-hearted" checked
+                            <input class="form_accent" type="checkbox" name="emotional_vibe" value="Heavy-hearted" checked
                                    id="heavy-hearted_check">
                             <label class="form-check-label" for="heavy-hearted_check">Heavy-hearted</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="emotional_vibe" value="Neutral" checked
+                            <input class="form_accent" type="checkbox" name="emotional_vibe" value="Neutral" checked
                                    id="emotionally_neutral_check">
                             <label class="form-check-label" for="emotionally_neutral_check">Neutral</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="emotional_vibe" value="Lighthearted" checked
+                            <input class="form_accent" type="checkbox" name="emotional_vibe" value="Lighthearted" checked
                                    id="lighthearted_check">
                             <label class="form-check-label" for="lighthearted_check">Lighthearted</label>
                         </div>
                     </div>
                     <!-- Mental Vibe -->
                     <div class="form-group">
-                        <label>Mental Vibe</label>
+                        <legend>Mental Vibe:</legend>
                         <div class="form-check">
-                            <input type="checkbox" name="mental_vibe" value="Thought-provoking" checked
+                            <input class="form_accent" type="checkbox" name="mental_vibe" value="Thought-provoking" checked
                                    id="thought-provoking_check">
                             <label class="form-check-label" for="thought-provoking_check">Thought-provoking</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="mental_vibe" value="Neutral" checked
+                            <input class="form_accent" type="checkbox" name="mental_vibe" value="Neutral" checked
                                    id="mentally_neutral_check">
                             <label class="form-check-label" for="mentally_neutral_check">Neutral</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="mental_vibe" value="Brainless" checked id="brainless_check">
+                            <input class="form_accent" type="checkbox" name="mental_vibe" value="Brainless" checked id="brainless_check">
                             <label class="form-check-label" for="brainless_check">Brainless</label>
                         </div>
                     </div>
                     <!-- Genres -->
 
                     <div class="form-group">
-                        <label for="genre-multiple-group">Select Genres:</label>
+                        <legend>Select Genres:</legend>
                         <select multiple class="form-control" name="genre_selection" id="genre-multiple-group">
                             {% for genre in genres %}
                             <option selected="selected">{{ genre }}</option>
@@ -83,8 +85,9 @@
                         </select>
                     </div>
 
-
-                    <button type="submit" class="btn btn-primary">Go</button>
+                    <div class="text-right">
+                    <button type="submit" class="btn modal-btn">Go!</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -94,7 +97,7 @@
 
 {% else %}
 <!-- Other content -->
-<h1>Top Pick</h1>
+<h1 class="heading big-heading">Top Pick</h1>
 <div class="card-group">
     <div class="card" style="z-index: 1;">
         <div class="top-pick top" style="background-image: url({{ movies[0].img_url }});">
@@ -106,47 +109,51 @@
     </div>
 </div>
 
-<div class="card text-white bg-dark w-100" style = "top:-20px; z-index:0; overflow:hidden;">
+<div class="card text-white w-100 top-pick-card" style = "">
   <div class="card-body" style="padding:2rem;">
-      <h1 class="card-title" style="padding:0;">{{ movies[0].title }} ({{movies[0].year }})</h1>
-       <div class="rating">
-            <h3 class="card-title">{{movies[0].pop_rating }}/10 <i class="fas fa-star star"></i></h3>
+      <h1 class="card-title" style="padding:0; margin-top: 3rem;">{{ movies[0].title }} ({{movies[0].year }})</h1>
+       <div class="rating_display">
+            <h3 class="card-title" style = "padding: 0 0 1rem 0;">{{movies[0].pop_rating }}/5 <i class="fas fa-star star"></i></h3>
            </div>
-            <h6 class="card-subtitle mb-2 text-muted">Genres: {{movies[0].genre}}</h6>
-           <h6 class="card-subtitle mb-2 text-muted">Mental vibe: {{movies[0].mental_vibe}}</h6>
-           <h6 class="card-subtitle mb-2 text-muted">Emotional vibe: {{movies[0].emotional_vibe}}</h6>
-    <p class="card-text">{{movies[0].description}}</p>
-      <p class="card-text"><small class="text-muted">Runtime: {{movies[0].run_time}} minutes</small></p>
-
-      <div class="card-footer">
-    <a class="btn btn-light" href="#" role="button">Where to watch</a> <!-- make work and make height dynamic -->
-  </div>
-
+            <h4 class="card-subtitle mb-3 text-muted">Genres: {{movies[0].genre}}</h4>
+           <h4 class="card-subtitle mb-3 text-muted">Mental vibe: {{movies[0].mental_vibe}}</h4>
+           <h4 class="card-subtitle mb-3 text-muted">Emotional vibe: {{movies[0].emotional_vibe}}</h4>
+    <h6 class="card-text" style="margin-top: 3rem; margin-bottom: 3rem; font-size: 2rem;">{{movies[0].description}}</h6>
+      <p class="card-text text-muted">Runtime: {{movies[0].run_time}} minutes</small></p>
   </div>
 </div>
 
 <!-- other options -->
-<h1>More options</h1>
+<h1 class="heading big-heading">More options</h1>
 
     <div class="container-fluid">
         <div class="row justify-content-center">
     {% for movie in movies[1:] %}
     <!-- one card -->
-    <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+    <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1" style="background-color: #04293A;">
         <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
         </div>
         <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
             <div>
                 <div class="title">{{ movie.title }} <br></div>
-                <div class="rating">
-                    <label>{{ movie.pop_rating }}</label>
+
+
+                {% if movie.my_rating %}
+                <div class="rating_display">
+                    <label>Your Rating: {{ movie.my_rating }} / 5</label>
                     <i class="fas fa-star star"></i>
                 </div>
+                {% else %}
+                <div class="rating_display">
+                    <label>{{ movie.pop_rating }} / 5</label>
+                    <i class="fas fa-star star"></i>
+                </div>
+                {% endif %}
+
+
                 <p class="genre">{{ movie.emotional_vibe }} emotionally, {{ movie.mental_vibe }} mentally </p>
-                <p class="run_time">{{ movie.run_time }} minutes</p>
-                <p class="overview">
-                    {{ movie.description }}
-                </p>
+                <p class="overview"> {{ movie.description }}</p>
+                <p class="run_time text-muted">{{ movie.run_time }} minutes</p>
 
             </div>
         </div>
@@ -162,4 +169,5 @@
 
 
 {% endif %}
+    </div>
 {% endblock %}

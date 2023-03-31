@@ -9,23 +9,23 @@
 {% block content %}
 
 <div class="my-top-header">
-    <h1 class="heading big-heading">Your Movie Jars</h1>
+    <h1 class="heading big-heading">Your Motion Picture Jars</h1>
 </div>
 
 
-<div class="container-fluid" style="background-color: #DEF6CA; margin:0; padding:0;">
+<div class="container-fluid" style="margin:0; padding:0;">
     <!-- Movie lists -->
     {% for movie_list in watchlists %}
     <button type="button" class="collapsible" style="margin : 1px 0;">{{movie_list.name}}</button>
     <div class="content">
 
         <!-- display movie area -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding: 5rem 0;">
             <div class="row justify-content-center">
                 {% for movie in movie_list.movies %}
                 <!-- one card -->
 
-                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1" style="background-color: #DEF6CA;">
+                <div class="card col-xl-1 col-lg-3 col-md-4 col-sm-12 border-0 m-1" style="background-color: #04293A;">
                     <div class="front" style="background-image: url({{ movie.img_url }}); right:0px;">
                     </div>
                     <div class="back" style="right:0px; border-style:groove; border-width: 2px;">
@@ -73,10 +73,12 @@
                 {% endfor %}
 
                 <!-- Add movie card -->
-                <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
+                <div class="card col-xl-1 col-lg-3 col-md-4 col-sm-12 border-0 m-1">
                     <a href="{{ url_for('search_movies', watchlist_id=movie_list.id) }}">
                         <div class="add_movie" style="right:0px;">
-                            <h2>+ Add movie(s)</h2>
+                            <div class="add_mp_circle">
+                            <h1><i class="fa-solid fa-circle-plus fa-xl"></i></h1>
+                                </div>
                         </div>
                     </a>
                 </div>
@@ -86,7 +88,7 @@
         <!--end movie display -->
 
 
-        <a href="#" class="button delete-button"
+        <a href="#" class="delete-button"
            data-href="{{ url_for('delete_movie_list', watchlist_id=movie_list.id) }}"
            data-toggle="modal" data-target="#confirm-delete"><i class="fa-solid fa-trash-can"></i> Delete Movie Jar</a>
 
@@ -95,7 +97,7 @@
     {%endfor %}
 
     <!-- Create a new jar button-->
-    <button class="collapsible" type="submit" style="margin : 1rem 0 3rem 0;" data-toggle="modal"
+    <button class="new-movie-jar-button" type="submit" style="margin : 1rem 0 3rem 0;" data-toggle="modal"
             data-target="#add-movie-jar">+ Create new movie jar
     </button>
 
@@ -127,19 +129,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Update Motion Picture</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title">Update Motion Picture Info</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
             </div>
             <div class="modal-body">
                 <form id=update_form action="{{ url_for('edit_mp') }}" method="post">
                     <div class="form-group">
-                        <label for="mp_name">Movie to update: </label>
+                        <legend>Movie to update: </legend>
                         <input class="readonly_input form-control" type="text" id="mp_name" name="mp_name" readonly>
                     </div>
 
-                    <p>Choose the emotional and mental vibe of this movie.</p>
                     {% include "vibe_selector_template.html" %}
 
+                    <legend>Have you seen this movie? </legend>
                     <div class="form-check form-group">
                         <input type="checkbox" name="watched_check" value="True" checked
                                id="watched_update_check">
@@ -147,12 +150,13 @@
                     </div>
 
 
-                    <p>(Optional field) Add a custom rating: </p>
+                    <legend>(Optional field) Add a custom rating: </legend>
                     {% include "star_form_template.html" %}
-                    <button type="submit" id="update_mp_submit" class="btn btn-primary"
+                    <div class="text-right">
+                    <button type="submit" id="update_mp_submit" class="btn modal-btn"
                             onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Updating";'>
                         Save
-                    </button>
+                    </button></div>
                 </form>
             </div>
         </div>
@@ -165,37 +169,37 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                Confirm Delete
+                <h3 class="modal-title">Confirm Delete</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
             </div>
             <div class="modal-body">
                 <form action="{{ url_for('delete_movie')}}" method="post">
                     <div class="form-group">
+
                         <label for="movie_name">Delete</label>
-                        <input class="readonly_input" type="text" id="movie_name" name="movie_name" readonly="readonly">
+                        <input class="readonly_input" type="text" id="movie_name" name="movie_name" readonly>
 
                         <label for="watchlist_name">from</label>
-                        <input class=readonly_input" type="text" id="watchlist_name" name="watchlist_name"
-                               readonly="readonly">
+                        <input class="readonly_input" type="text" id="watchlist_name" name="watchlist_name" readonly>
                         <label for="watchlist_name">?</label>
                     </div>
 
                     <!-- Watched? -->
 
                     <div class="form-check form-group">
-                        <input type="checkbox" name="watched_check" value="True" checked
+                        <input class="form_accent" type="checkbox" name="watched_check" value="True" checked
                                id="watched_check">
-                        <label class="form-check-label" for="watched_check">I've watched this previously.</label>
+                        <label class="form-check-label" for="watched_check">I watched it.</label>
                     </div>
 
                     <!-- star rating -->
-                    <div>
-                        <label>Add a rating: </label>
-                    </div>
+                    <legend>Add a rating</legend>
 
                     {% include "star_form_template.html" %}
 
-                    <div>
-                        <button type="submit" class="btn btn-primary">Delete</button>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </div>
                 </form>
             </div>
@@ -209,22 +213,23 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Create a New Movie Jar</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title">Create a New Motion Picture Jar</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
             </div>
             <div class="modal-body">
                 <form action="{{ url_for('add_list') }}" method="post">
                     <div class="form-group">
-                        <label for="watchlist_name">Name for watchlist</label>
+                        <legend>Name for Media Jar</legend>
                         <input type="text" class="form-control" name="watchlist_name" id="watchlist_name_entry"
                                placeholder="Enter Name" required>
                     </div>
                     <div class="form-group">
-                        <label for="watchlist_description">Movie Jar Description</label>
+                        <legend>Media Jar Description</legend>
                         <textarea class="form-control" name="watchlist_description" id="watchlist_description"
                                   rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="text-right"><button type="submit" class="btn modal-btn">Save</button></div>
                 </form>
             </div>
         </div>

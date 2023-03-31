@@ -2,20 +2,7 @@ from flask import render_template, redirect, url_for, request
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
 import subprocess
-import os
 
-# NECESSARY
-# TODO: (begin_) Make PRETTY
-
-# Nice-to-haves
-# TODO: talk to letterboxd
-
-# When ready to publish: FRIDAY
-# TODO: Requirements file
-# TODO: Make comments on code
-# TODO: Make instructional README / best practice for launch
-# TODO: Download on Jesse's computer
-# TODO: Add to Portfolio :)
 
 # db.drop_all()
 db.create_all()
@@ -154,8 +141,6 @@ def delete_movie_list(watchlist_id):
 
 @app.route("/movie_jar", methods=["GET", "POST"])
 def movie_jar():
-    # TODO: make max runtime dynamic
-    # TODO: add genres into it
     db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
     if request.method == "POST":
         db_manager.filter_movies(request.form)
@@ -163,19 +148,12 @@ def movie_jar():
                                movies=db_manager.filtered_movies)
     return render_template("movie_picker.html",
                            genres=db_manager.all_genres,
-                           watchlists=db_manager.all_watchlists)
-
-
-
+                           watchlists=db_manager.all_watchlists,
+                           ave_runtime=round(sum(db_manager.all_runtimes) / len(db_manager.all_runtimes)),
+                           max_runtime=max(db_manager.all_runtimes),
+                           min_runtime=min(db_manager.all_runtimes))
 
 
 if __name__ == '__main__':
     subprocess.run('cmd /c start chrome "http://127.0.0.1:5000"')
     app.run(debug=True, use_reloader=False)
-
-
-
-
-
-
-
