@@ -61,7 +61,7 @@
         {% elif show["id"] in all_ids %}
         <a href="{{ url_for('add_existing_mp', mp_id=show['id']) }}" class="btn">+</a>
         {% else %}
-        <a data-toggle="modal" data-target="#vibe_selector_modal" data-mp_id="{{ show['id'] }}" data-show_movie="show"
+        <a data-toggle="modal" data-target="#vibe_selector_modal" data-mp_id="{{ show['id'] }}" data-show_movie="tv"
            class="btn">+</a>
         {% endif %}
         {{ show["name"] }} - {{ show["first_air_date"] }}

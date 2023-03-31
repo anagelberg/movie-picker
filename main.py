@@ -2,6 +2,11 @@ from flask import render_template, redirect, url_for, request, flash
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
 import subprocess
+from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+import os
+import requests
 
 #db.drop_all()
 db.create_all()
