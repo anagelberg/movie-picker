@@ -8,7 +8,24 @@
 
 {% block content %}
 
+
 <div class="my-top-header">
+
+    <!-- flashed messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="user_feedback_full">
+    <ul class=flashes>
+        {% for message in messages %}
+            <h3 class = "page_text">{{ message }}</h3>
+        {% endfor %}
+    </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+
+
     <h1 class="heading big-heading">Your Motion Picture Jars</h1>
 </div>
 
@@ -144,9 +161,9 @@
 
                     <legend>Have you seen this movie? </legend>
                     <div class="form-check form-group">
-                        <input type="checkbox" name="watched_check" value="True" checked
+                        <input class="form_accent" type="checkbox" name="watched_check" value="True"
                                id="watched_update_check">
-                        <label class="form-check-label" for="watched_update_check">I've watched this previously.</label>
+                        <label class="form-check-label " for="watched_update_check">I've watched this previously.</label>
                     </div>
 
 

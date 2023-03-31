@@ -1,10 +1,9 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
 import subprocess
 
-
-# db.drop_all()
+#db.drop_all()
 db.create_all()
 
 db_manager = DbManager()
@@ -141,11 +140,16 @@ def delete_movie_list(watchlist_id):
 
 @app.route("/movie_jar", methods=["GET", "POST"])
 def movie_jar():
-    db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
+    if Movie.query.all() and MovieList.query.all():
+        db_manager.get_data(all_movies=Movie.query.all(), all_watchlists=MovieList.query.all())
+    else:
+        flash("Add some movies first!")
+        return redirect(url_for('home'))
     if request.method == "POST":
         db_manager.filter_movies(request.form)
         return render_template("movie_picker.html",
-                               movies=db_manager.filtered_movies)
+                               movies=db_manager.filtered_movies,
+                               display=True)
     return render_template("movie_picker.html",
                            genres=db_manager.all_genres,
                            watchlists=db_manager.all_watchlists,

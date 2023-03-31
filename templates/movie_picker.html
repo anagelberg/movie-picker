@@ -9,7 +9,7 @@
 <div class="background">
 
 
-{% if not movies %}
+{% if not display %}
 <!-- Modal -->
 <div id="filter_modal" class="modal fade">
     <div class="modal-dialog">
@@ -94,9 +94,13 @@
     </div>
 </div>
 <!-- End modal -->
-
 {% else %}
 <!-- Other content -->
+    {% if not movies %}
+    <div class="user_feedback_full">
+    <h3 class = "page_text">No movies were found with your search criteria. Please try again.</h3>
+</div>
+    {% else %}
 <h1 class="heading big-heading">Top Pick</h1>
 <div class="card-group">
     <div class="card" style="z-index: 1;">
@@ -124,8 +128,9 @@
 </div>
 
 <!-- other options -->
+    {% if movies[1:]: %}
 <h1 class="heading big-heading">More options</h1>
-
+    {% endif %}
     <div class="container-fluid">
         <div class="row justify-content-center">
     {% for movie in movies[1:] %}
@@ -167,7 +172,7 @@
 
 
 
-
+{% endif %}
 {% endif %}
     </div>
 {% endblock %}

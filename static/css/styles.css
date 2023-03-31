@@ -36,7 +36,11 @@ html, body, .container, .background {
     color: #778f97;
 }
 
-
+.user_feedback_full {
+    text-align: center;
+    padding: 50px;
+    margin: 0;
+}
 
 /* buttons */
 .btn {
@@ -298,3 +302,6 @@ hr {
  margin: 0;
 }
 
+.form_accent {
+    accent-color: #064663;
+}
