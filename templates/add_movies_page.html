@@ -1,18 +1,9 @@
 {% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% include "header.html" %}
-
-{% block styles %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-{% endblock %}
 
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
 {% endblock %}
-
-
-{% block title %}Select Movie{% endblock %}
 
 
 {% block content %}
@@ -21,12 +12,14 @@
   <h1> Add movies to "{{ watchlist.name }}" </h1>
 
   <!-- Search Form -->
-  <form action="{{ url_for('search_movies', watchlist_id = watchlist.id) }}" method="post">
+  <form id="search_form" action="{{ url_for('search_movies', watchlist_id = watchlist.id) }}" method="post">
                     <div class="form-group">
                         <label for="search_entry">Title of movie</label>
                         <input type="text" class="form-control" name="search_entry" id="search_entry" placeholder="Enter Title" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" id="search_submit" class="btn btn-primary"
+                            onclick='this.innerHTML="<i class=\"spinner-border spinner-border-sm\"></i> Searching";'>
+                        Search</button>
   </form>
 
 
@@ -80,14 +73,11 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-
-
-
                 <form id=vibe_form action="{{ url_for('add_mp') }}" method="post">
                     <!-- invisible to user -->
                     <div class="row">
-                        <div class="col"><input class="readonly_input form-control invisible" type="text" id="mp_id" name="mp_id" readonly></div>
-                        <div class="col"><input class="readonly_input form-control invisible" type="text" id="show_movie" name="show_movie" readonly></div>
+                        <div class="col"><input class="readonly_input form-control" type="text" id="mp_id" name="mp_id" readonly></div>
+                        <div class="col"><input class="readonly_input form-control" type="text" id="show_movie" name="show_movie" readonly></div>
                     </div>
                     <!-- -->
 

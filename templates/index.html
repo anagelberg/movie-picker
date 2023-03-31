@@ -1,6 +1,10 @@
 {% extends 'bootstrap/base.html' %}
 {% include "header.html" %}
 
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
+{% endblock %}
+
 
 {% block content %}
 

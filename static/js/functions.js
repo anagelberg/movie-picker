@@ -60,6 +60,14 @@ $('#vibe_form').submit(function(){
             $(this).find(':input[type=submit]').prop('disabled', true);
             });
 
+
+// Disable search from after first click
+$('#search_form').submit(function(){
+            $(this).find(':input[type=submit]').prop('disabled', true);
+            });
+
+
+
 // Populates invisible fields on vibe selector form
 $('#vibe_selector_modal').on('show.bs.modal', function(e) {
     var mp_id = $(e.relatedTarget).data('mp_id');
