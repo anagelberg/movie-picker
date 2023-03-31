@@ -26,15 +26,15 @@
 }
 
 .my-top-header {
-    background-color: #FBB13C;
-    opacity: .85;
+    background-color: #001F2F;
+    opacity: .9;
     padding: 20px 0 0;
     margin: 0;
 }
 
 .big-heading {
     font-size: 13rem;
-    color: #001F2F;
+    color: #6F6A95;
     font-style: bold;
     text-align: center;
     justify-content: center;
@@ -49,6 +49,12 @@
 	 margin-left: 1rem;
 	 margin-bottom: 3rem;
 }
+
+.delete-button {
+    margin: 2rem;
+}
+
+
  .card {
 	 background-color: #939F9A;
 	 cursor: pointer;
@@ -206,10 +212,6 @@
     padding: 10px;
 }
 
-nav-link {
-    font-size: 10rem;
-}
-
 
 
 .rating_display {
@@ -237,7 +239,7 @@ nav-link {
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
   background-color: #001F2F;
-  color: #6F6A95;
+  color: #778f97;
   cursor: pointer;
   padding: 20px 70px;
   margin: 10px 0;
@@ -250,7 +252,7 @@ nav-link {
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .active, .collapsible:hover {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 /* Style the collapsible content. Note: hidden by default */
