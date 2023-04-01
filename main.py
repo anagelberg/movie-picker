@@ -2,11 +2,6 @@ from flask import render_template, redirect, url_for, request, flash
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
 import subprocess
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
-import os
-import requests
 
 #db.drop_all()
 db.create_all()
@@ -164,5 +159,7 @@ def movie_jar():
 
 
 if __name__ == '__main__':
-    subprocess.run('cmd /c start chrome "http://127.0.0.1:5000"')
-    app.run(debug=True, use_reloader=False)
+    from waitress import serve
+    subprocess.run('cmd /c start chrome "http://localhost:8080"')
+    serve(app, host='0.0.0.0', port=8080)
+    #app.run(debug=True, use_reloader=False)
