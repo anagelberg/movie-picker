@@ -1,3 +1,4 @@
+
 from flask import render_template, redirect, url_for, request, flash
 from app import db, Movie, MovieList, app
 from manager import DbManager, SearchManager
@@ -158,8 +159,7 @@ def movie_jar():
                            min_runtime=min(db_manager.all_runtimes))
 
 
+subprocess.run('cmd /c start chrome "http://127.0.0.1:8080"')
 if __name__ == '__main__':
     from waitress import serve
-    subprocess.run('cmd /c start chrome "http://localhost:8080"')
     serve(app, host='0.0.0.0', port=8080)
-    #app.run(debug=True, use_reloader=False)
