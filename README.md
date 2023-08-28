@@ -10,10 +10,7 @@ The movie picker tool at the top of the page prompts the user for a run time, ja
 
 
 # How to use
-This app can be previewed here: ______________________.
-However, this is not suitable for use of the application, as there is no user sign in and your data will be erased after a single use. It is simply here to demonstrate the concept. The reason for this is one of scope and acknowledgment of my current limitations -- I need to learn more before I am comfortable hosting your data in this way. This is the next step for this project though, so please stay tuned if this is something of interest to you. 
-
-Currently, for my own personal use, I am running this application on my home computer. If you would like to do the same, here are some instructions for how you could go about doing so from the code provided in this repository. 
+ I am updating this application using a Javascript / React stack to modernize it, and once it is done it will be deployed publicly. Currently, for my own personal use, I am running this application on my home computer. If you would like to do the same, here are some instructions for how you could go about doing so from the code provided in this repository.
 
 ## For Windows: 
 1. Download this repository and note where on your computer you download the folder. 
